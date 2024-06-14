@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sandbox</title>
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  </head>
+  <body>
+    <div id="viewer" style='height: calc(100vh - 0px); position:relative;'></div>
+    <rv-dialog id="dialog" title="This is my title">
+      <h1>This is content</h1>
+      <div slot="footer">
+        <button class="rv-button">OK</button>
+        <button class="rv-button" onclick="document.getElementById('dialog').open = false;">Cancel</button>
+      </div>
+    </rv-dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>    
+    <script src="https://dl.revealbi.io/reveal/libs/1.6.6/infragistics.reveal.js"></script>
+  </body>
+</html>

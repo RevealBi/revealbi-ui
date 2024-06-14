@@ -1,14 +1,15 @@
 {
   "name": "@revealbi/ui",
   "version": "0.1.14",
-  "main": "./index.js",
-  "module": "./index.mjs",
-  "unpkg": "./index.umd.js",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "unpkg": "./index.umd.cjs",
   "typings": "./index.d.ts",
   "exports": {
     ".": {
-      "import": "./index.mjs",
-      "require": "./index.js"
+      "import": "./index.js",
+      "require": "./index.cjs"
     },
     "./themes/*": "./themes/*"
   },
