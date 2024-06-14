@@ -4,7 +4,7 @@
     <!-- <visualization-viewer [dashboard]="dashboard" [visualization]="visualization"></visualization-viewer> -->
 </div>
 
-<ui-dialog #dialog [open]="isOpen" [title]="title">
+<rv-dialog #dialog [open]="isOpen" [title]="title">
     <!-- <div slot="icon">
             <img src="../favicon.ico">
         </div> -->
@@ -14,8 +14,7 @@
     <div slot="footer">
         <button class="rv-button" (click)="footerButtonClick()">Save Button</button>
     </div>
-</ui-dialog>
-
+</rv-dialog>
 
 
 <router-outlet></router-outlet>

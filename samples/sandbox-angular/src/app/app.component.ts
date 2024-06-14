@@ -1,21 +1,22 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { RevealSdkSettings, RevealViewOptions, SaveEventArgs } from '@revealbi/ui';
-import { DialogComponent, RevealViewComponent } from '@revealbi/ui-angular';
+import { RevealSdkSettings, RevealViewOptions, RvDialog, SaveEventArgs } from '@revealbi/ui';
+import { RevealViewComponent } from '@revealbi/ui-angular';
 
 RevealSdkSettings.serverUrl = "https://samples.revealbi.io/upmedia-backend/reveal-api/";
 //RevealSdkSettings.serverUrl = "http://localhost:5111";
 
 @Component({
   standalone: true,
-  imports: [RouterModule, DialogComponent, RevealViewComponent],
+  imports: [RouterModule, RevealViewComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
   @ViewChild("revealView") revealView!: RevealViewComponent;
-  @ViewChild("dialog") dialog!: DialogComponent;
+  @ViewChild("dialog") dialog!: ElementRef<RvDialog>;
   title = 'Save Dashboard';
   isOpen: boolean = true;
 
@@ -43,7 +44,7 @@ export class AppComponent {
 
   async onSave($event: SaveEventArgs) {
 
-    const result = await this.dialog.show();
+    const result = await this.dialog.nativeElement.show();
 
     if (result === "save-button") {
       $event.dashboardId = $event.name = result;
@@ -52,7 +53,6 @@ export class AppComponent {
       console.log("Save cancelled");
       return;
     }
-
   }
 
   footerButtonClick() {
@@ -60,6 +60,6 @@ export class AppComponent {
     if (filter) {
         filter.selectedValues = ["Diamond", "Ruby"];
     }   
-    this.dialog.close("save-button");
+    this.dialog.nativeElement.close("save-button");
   }
 }
