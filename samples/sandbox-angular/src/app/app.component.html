@@ -1,0 +1,21 @@
+<div style="height: 100%;">
+    <reveal-view #revealView [dashboard]="dashboard" [options]="options" (save)="onSave($event)"></reveal-view>
+
+    <!-- <visualization-viewer [dashboard]="dashboard" [visualization]="visualization"></visualization-viewer> -->
+</div>
+
+<ui-dialog #dialog [open]="isOpen" [title]="title">
+    <!-- <div slot="icon">
+            <img src="../favicon.ico">
+        </div> -->
+
+    <h1>Do you want to save this dashboard?</h1>
+
+    <div slot="footer">
+        <button class="rv-button" (click)="footerButtonClick()">Save Button</button>
+    </div>
+</ui-dialog>
+
+
+
+<router-outlet></router-outlet>
