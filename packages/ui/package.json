@@ -11,7 +11,8 @@
       "import": "./index.js",
       "require": "./index.cjs"
     },
-    "./themes/*": "./themes/*"
+    "./themes/light.css": "./themes/light.css",
+    "./themes/dark.css": "./themes/dark.css"
   },
   "dependencies": {
     "lit": "^3.1.4"

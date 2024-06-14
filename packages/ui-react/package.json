@@ -1,0 +1,7 @@
+{
+  "name": "@revealbi/ui-react",
+  "version": "0.1.6",
+  "peerDependencies": {
+    "@revealbi/ui": ">=0.1.0"
+  }
+}
