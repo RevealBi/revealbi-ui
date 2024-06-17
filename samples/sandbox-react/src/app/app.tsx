@@ -1,12 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { RevealSdkSettings, RevealViewOptions } from '@revealbi/ui';
-import { RevealView, RevealViewRef } from '@revealbi/ui-react';
+import { RevealSdkSettings, RevealViewOptions, SaveEventArgs } from '@revealbi/ui';
+import { RevealView, RevealViewRef, RvDialog, RvDialogRef } from '@revealbi/ui-react';
 import { useRef, useState } from 'react';
 import styles from './app.module.scss';
 
 export function App() {
 
   const rvRef = useRef<RevealViewRef>(null);
+  const rvDialogRef = useRef<RvDialogRef>(null);;
   
   RevealSdkSettings.serverUrl = "https://samples.revealbi.io/upmedia-backend/reveal-api/";
   //RevealSdkSettings.serverUrl = "http://localhost:5111";
@@ -28,19 +29,35 @@ export function App() {
     },
   }
 
-  const onInitialized = () => {
-    if(rvRef.current) {
-      const filter = rvRef.current.filters?.getByTitle("CampaignID");
-      if (filter) {
-          filter.selectedValues = ["Diamond", "Ruby"];
-      }   
-    }
+  const footerButtonClick = () => {
+    rvDialogRef.current?.close("save-button");    
+    console.log("Save button clicked");
   }
 
   
+  async function onSave(args: SaveEventArgs) {
+
+    const result = await rvDialogRef.current?.show();
+
+    if (result === "save-button") {
+      args.dashboardId = args.name = result;
+      args.saveFinished();
+    } else {
+      console.log("Save cancelled");
+      return;
+    }
+  }
+
   return (
     <div style={{height: '100%'}}>
-      <RevealView ref={rvRef} dashboard={dashboard} options={options} onInitialized={onInitialized} ></RevealView>
+      <RevealView ref={rvRef} dashboard={dashboard} options={options} onSave={onSave} ></RevealView>
+
+      <RvDialog ref={rvDialogRef} open={true} title="Save Dashboard">
+        <h1>Do you want to save this dashboard?</h1>
+        <div slot="footer">
+          <button className="rv-button" onClick={footerButtonClick}>Save Button</button>
+        </div>
+      </RvDialog>
     </div>
   );
 }

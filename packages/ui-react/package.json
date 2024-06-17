@@ -3,5 +3,8 @@
   "version": "0.1.6",
   "peerDependencies": {
     "@revealbi/ui": ">=0.1.0"
+  },
+  "dependencies": {
+    "@lit/react": "^1.0.5"
   }
 }
