@@ -9,7 +9,22 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body>
-    <div id="viewer" style='height: calc(100vh - 0px); position:relative;'></div>
+
+    <button id="button">Do Something</button>
+
+    <!-- <div id="viewer" style='height: calc(100vh - 0px); position:relative;'></div> -->
+     <div style="height: 100%; overflow-y: auto;">
+
+     
+
+    <rv-visualization-viewer id="viz-viewer" dashboard="Sales" visualization="Leads by Year" style="height: 500px;"></rv-visualization-viewer>
+
+    <rv-visualization-viewer id="viz-viewer2" dashboard="Sales" visualization="5" style="height: 500px;"></rv-visualization-viewer>
+
+    <rv-visualization-viewer id="viz-viewer3" dashboard="Sales" visualization="4" style="height: 500px;"></rv-visualization-viewer>
+
+  </div>
+
     <rv-dialog id="dialog" title="This is my title">
       <h1>This is content</h1>
       <div slot="footer">
