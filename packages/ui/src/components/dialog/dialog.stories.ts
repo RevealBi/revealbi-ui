@@ -1,30 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
-import { RvDialog as RvcDialog } from "./dialog.component";
+import  { RvDialog } from "./index";
 import { html } from 'lit';
 import { doc } from 'prettier';
 
-// This default export determines where your story goes in the story list
 const meta: Meta = {
     title: 'Dialog',
     component: 'rv-dialog',
-    // argTypes: {
-    //     title: { control: 'text' },
-    //     open: { control: 'boolean' },
-    // },
 };
-
 export default meta;
 type Story = StoryObj;
 
 export const FirstStory: Story = {
-    name: 'Open',
+    name: 'Default',
     args: {
         title: 'Test Title',
         open: true,
     },
     render: (args: any) => html`
-        <h1>Use properties to open and close the dialog.</h1>
-        <rv-dialog .title=${args.title} .open=${args.open} id="dialog"></rv-dialog>
+        <rv-dialog .title=${args.title} .open=${args.open}></rv-dialog>
     `,
 };
 
@@ -60,20 +53,20 @@ export const ThirdStory: Story = {
 
 const openDialog = (id: string) => {
     const dialogElement = document.getElementById(id);
-    if (dialogElement instanceof RvcDialog) {
+    if (dialogElement instanceof RvDialog) {
         dialogElement.show().then((result: any) => {
             console.log(`Dialog closed with result: ${result}`);
         });
     } else {
-        console.error("Element is not an instance of RvcDialog");
+        console.error("Element is not an instance of RvDialog");
     }
 } 
 
 const closeDialog = (id: string) => {
     const dialogElement = document.getElementById(id);
-    if (dialogElement instanceof RvcDialog) {
+    if (dialogElement instanceof RvDialog) {
         dialogElement.close("custom");
     } else {
-        console.error("Element is not an instance of RvcDialog");
+        console.error("Element is not an instance of RvDialog");
     }
 }

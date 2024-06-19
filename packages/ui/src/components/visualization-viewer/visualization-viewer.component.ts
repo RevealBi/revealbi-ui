@@ -1,4 +1,4 @@
-import { property } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { RvElement } from "../../core/rv-element";
 import { merge } from "../../utilties/Merge";
 import { VisualizationViewerOptions } from "../VisualizationViewer";
@@ -10,14 +10,15 @@ import styles from "./visualization-viewer.styles";
 declare let $: any;
 
 //this is an experiemental component to see if we can wrap the RevealView component in a web component
+@customElement("rv-visualization-viewer")
 export class RvVisualizationViewer extends RvElement {
     static override styles = styles;
-    static defaultOptions: VisualizationViewerOptions = VisualizationViewerDefaults;
 
     private _revealView: any = null;
+    private _mergedOptions: VisualizationViewerOptions = VisualizationViewerDefaults;
 
     @property({type: String}) dashboard: string | unknown = "";
-    @property({type: Object, attribute: false}) options: VisualizationViewerOptions = RvVisualizationViewer.defaultOptions;
+    @property({type: Object, attribute: false}) options: VisualizationViewerOptions = {};
     @property({type: String}) visualization: string | number = 0;
 
     protected override firstUpdated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
@@ -30,11 +31,7 @@ export class RvVisualizationViewer extends RvElement {
 
         const selector = this.renderRoot.querySelector('#rv-viewer');
         this._revealView = new $.ig.RevealView(selector);
-
-        this._revealView.canEdit = false;
         this._revealView.singleVisualizationMode = true;
-        this._revealView.showHeader = false;
-        this._revealView.showBreadcrumbDashboardTitle = false;
 
         this.updateOptions(options);
 
@@ -47,7 +44,7 @@ export class RvVisualizationViewer extends RvElement {
                 return;
             }
             else {
-                const vizItems = this.options.menu!.items!;
+                const vizItems = this._mergedOptions.menu!.items!;
                 vizItems.forEach(vizItem => {
                     e.menuItems.push(new $.ig.RVMenuItem(vizItem.title, vizItem.icon, () => vizItem.click(viz)));
                 })
@@ -101,22 +98,22 @@ export class RvVisualizationViewer extends RvElement {
             return;
         }
 
-        this.options = merge(RvVisualizationViewer.defaultOptions, options);
+        this._mergedOptions = merge(VisualizationViewerDefaults, options);
 
-        this._revealView.showExportToExcel = this.options.menu!.exportToExcel;
-        this._revealView.showExportImage = this.options.menu!.exportToImage;
-        this._revealView.showMenu = this.options.menu!.showMenu;
-        this._revealView.showRefresh = this.options.menu!.refresh;
+        this._revealView.showExportToExcel = this._mergedOptions.menu!.exportToExcel;
+        this._revealView.showExportImage = this._mergedOptions.menu!.exportToImage;
+        this._revealView.showMenu = this._mergedOptions.menu!.showMenu;
+        this._revealView.showRefresh = this._mergedOptions.menu!.refresh;
 
-        this._revealView.showFilters = this.options.showFilters;
+        this._revealView.showFilters = this._mergedOptions.showFilters;
 
-        this._revealView.categoryGroupingSeparator = this.options.categoryGroupingSeparator;
-        this._revealView.crosshairsEnabled = this.options.crosshairs;
-        this._revealView.hoverTooltipsEnabled = this.options.hoverTooltips;
-        this._revealView.showChangeVisualization = this.options.changeChartType;
-        this._revealView.showStatisticalFunctions = this.options.statisticalFunctions;
-        this._revealView.canCopyVisualization = this.options.menu!.copy;
-        this._revealView.canDuplicateVisualization = this.options.menu!.duplicate;
+        this._revealView.categoryGroupingSeparator = this._mergedOptions.categoryGroupingSeparator;
+        this._revealView.crosshairsEnabled = this._mergedOptions.crosshairs;
+        this._revealView.hoverTooltipsEnabled = this._mergedOptions.hoverTooltips;
+        this._revealView.showChangeVisualization = this._mergedOptions.changeChartType;
+        this._revealView.showStatisticalFunctions = this._mergedOptions.statisticalFunctions;
+        this._revealView.canCopyVisualization = this._mergedOptions.menu!.copy;
+        this._revealView.canDuplicateVisualization = this._mergedOptions.menu!.duplicate;
     }
 
     private updateVisualization(visualization?: string | number) {
@@ -151,5 +148,11 @@ export class RvVisualizationViewer extends RvElement {
         return html`
             <div id="rv-viewer"></div>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+      'rv-visualization-viewer': RvVisualizationViewer;
     }
 }
