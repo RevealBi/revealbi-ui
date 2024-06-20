@@ -14,7 +14,7 @@ declare let $: any;
 
 export class RevealView {
     private _revealView: any = null;
-    static defaultOptions: RevealViewOptions = RevealViewDefaults;
+    //static defaultOptions: RevealViewOptions = RevealViewDefaults;
 
     /**
      * Gets the underlying RevealView RVDashboard object.
@@ -40,7 +40,7 @@ export class RevealView {
     /**
      * Gets or sets the options for the dashboard viewer.
      */
-    options: RevealViewOptions = RevealView.defaultOptions;
+    options: RevealViewOptions = {};
 
     /**
      * Represents an event that is triggered when a dashboard link is requested.
@@ -310,12 +310,7 @@ export class RevealView {
             return;
         }
 
-        if (options === undefined || options === null) {
-            this.options = RevealView.defaultOptions;
-        }
-        else {
-            this.options = merge(this.options, options);
-        }
+        this.options = merge({}, RevealViewDefaults, options);
 
         this._revealView.canEdit = this.options.canEdit;
         this._revealView.canSave = this.options.canSave;

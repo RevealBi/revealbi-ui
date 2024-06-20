@@ -10,8 +10,7 @@ declare let $: any;
 export class VisualizationViewer {
 
     private _revealView: any = null;
-    static defaultOptions: VisualizationViewerOptions = VisualizationViewerDefaults;
-    options: VisualizationViewerOptions = VisualizationViewer.defaultOptions;
+    options: VisualizationViewerOptions = {};
 
     constructor(selector: string, dashboard?: string | unknown, visualization?: string | number, options?: VisualizationViewerOptions) {
         $.ig.RevealSdkSettings.enableNewCharts = true;
@@ -92,12 +91,7 @@ export class VisualizationViewer {
             return;
         }
 
-        if (options === undefined) {
-            this.options = VisualizationViewer.defaultOptions;
-        }
-        else {
-            this.options = merge(this.options, options);
-        }
+        this.options = merge({}, VisualizationViewerDefaults, options);
 
         this._revealView.showExportToExcel = this.options.menu!.exportToExcel;
         this._revealView.showExportImage = this.options.menu!.exportToImage;
