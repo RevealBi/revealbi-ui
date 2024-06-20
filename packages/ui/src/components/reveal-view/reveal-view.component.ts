@@ -17,7 +17,7 @@ export class RvRevealView extends RvElement {
     static override styles = styles;
 
     private _revealView: any = null;
-    private _mergedOptions: RevealViewOptions = RevealViewDefaults;
+    private _mergedOptions: RevealViewOptions = {};
 
     /**
      * Gets or sets the dashboard to display in the RevealView component.
@@ -27,7 +27,7 @@ export class RvRevealView extends RvElement {
     /**
      * Gets or sets the options for the RevealView component.
      */
-    @property({ type: Object, attribute: false }) options: any = {};
+    @property({ type: Object, attribute: false }) options: RevealViewOptions = {};
 
     /**
      * Gets the dashboard date filter.
@@ -187,7 +187,7 @@ export class RvRevealView extends RvElement {
      * @returns {string} - The color to use for the series.
      */
     seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
-    
+
     /**
      * Represents an event that is triggered when the tooltip is showing.
      * 
@@ -238,7 +238,7 @@ export class RvRevealView extends RvElement {
             return;
         }
 
-        this._mergedOptions = merge(RevealViewDefaults, options);
+        this._mergedOptions = merge({}, RevealViewDefaults, options);        
 
         this._revealView.canEdit = this._mergedOptions.canEdit;
         this._revealView.canSave = this._mergedOptions.canSave;

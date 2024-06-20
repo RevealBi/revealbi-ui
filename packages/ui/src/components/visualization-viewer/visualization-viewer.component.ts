@@ -15,7 +15,7 @@ export class RvVisualizationViewer extends RvElement {
     static override styles = styles;
 
     private _revealView: any = null;
-    private _mergedOptions: VisualizationViewerOptions = VisualizationViewerDefaults;
+    private _mergedOptions: VisualizationViewerOptions = {};
 
     @property({type: String}) dashboard: string | unknown = "";
     @property({type: Object, attribute: false}) options: VisualizationViewerOptions = {};
@@ -98,7 +98,7 @@ export class RvVisualizationViewer extends RvElement {
             return;
         }
 
-        this._mergedOptions = merge(VisualizationViewerDefaults, options);
+        this._mergedOptions = merge({}, VisualizationViewerDefaults, options);
 
         this._revealView.showExportToExcel = this._mergedOptions.menu!.exportToExcel;
         this._revealView.showExportImage = this._mergedOptions.menu!.exportToImage;

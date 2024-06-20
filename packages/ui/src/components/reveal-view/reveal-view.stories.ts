@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 import { doc } from 'prettier';
 import './index';
+import { RevealViewDefaults } from '../RevealView/RevealViewDefaults';
+import { merge } from '../../utilties/Merge';
 
 // This default export determines where your story goes in the story list
 const meta: Meta = {
@@ -12,7 +14,7 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-export const FirstStory: Story = {
+export const DefaultStory: Story = {
     name: 'Default',
     args: {
         dashboard: 'Sales',
@@ -40,6 +42,16 @@ export const ExportStory: Story = {
         </div>
         <rv-reveal-view id="revealView" dashboard="Sales"></rv-reveal-view>
     </div>
+    `,
+};
+
+export const OptionsStory: Story = {
+    name: 'Options',
+    args: {
+        options: RevealViewDefaults
+    },
+    render: (args: any) => html`
+    <rv-reveal-view dashboard="Sales" .options=${args.options}></rv-reveal-view>
     `,
 };
 
