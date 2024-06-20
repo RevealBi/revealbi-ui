@@ -1,7 +1,7 @@
 import { RevealViewOptions } from "./Options";
 import { ChartType } from "./Enums";
 
-export const RevealViewDefaults: RevealViewOptions = {
+export const RevealViewDefaults: RevealViewOptions = Object.freeze({
     canEdit: true,
     canSave: true,
     canSaveAs: true,
@@ -58,4 +58,4 @@ export const RevealViewDefaults: RevealViewOptions = {
         editDataSource: false,
         machineLearning: false,
     },
-}
+});

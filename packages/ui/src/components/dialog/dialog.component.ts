@@ -1,23 +1,24 @@
 import { html } from "lit";
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import styles from "./dialog.styles";
 import { RvElement } from "../../core/rv-element";
 
+@customElement('rv-dialog')
 export class RvDialog extends RvElement {
     static override styles = styles;
 
-    @property() 
+    @property()
     override title: string = "";
 
-    @property({type: Boolean, reflect: true}) 
+    @property({ type: Boolean, reflect: true })
     open: boolean = false;
 
     private _closeResolver?: (value: string | PromiseLike<any>) => void;
 
     show(): Promise<any> {
         this.open = true;
-        return new Promise<any>((resolve) => { 
+        return new Promise<any>((resolve) => {
             this._closeResolver = resolve;
         });
     }
@@ -66,5 +67,11 @@ export class RvDialog extends RvElement {
             </div>
         </div>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'rv-dialog': RvDialog;
     }
 }

@@ -1,27 +1,33 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChartType } from "./Enums";
-import { RevealViewDefaults } from "./RevealViewDefaults";
+import { customElement, property } from "lit/decorators.js";
+import { RvElement } from "../../core/rv-element";
 import { merge } from "../../utilties/Merge";
-import { getRVDataSources } from "../../utilties/DataSourceFactory";
-import { DataLoadingEventArgs, DataPointClickedEventArgs, DataSourceDialogOpeningEventArgs, EditorClosedEventArgs, EditorClosingEventArgs, EditorOpenedEventArgs, EditorOpeningEventArgs, FieldsInitializingEventArgs, ImageExportedEventArgs, MenuOpeningEventArgs, TooltipShowingEventArgs, DashboardLinkRequestedArgs, DataSourcesRequestedArgs, SeriesColorRequestedArgs, SaveEventArgs, LinkSelectionDialogOpeningEventArgs } from "./Events";
+import { ChartType, DashboardFilters, DashboardLinkRequestedArgs, DataLoadingEventArgs, DataPointClickedEventArgs, DataSourceDialogOpeningEventArgs, DataSourcesRequestedArgs, EditorClosedEventArgs, EditorClosingEventArgs, EditorOpenedEventArgs, EditorOpeningEventArgs, FieldsInitializingEventArgs, ImageExportedEventArgs, LinkSelectionDialogOpeningEventArgs, MenuOpeningEventArgs, RevealViewOptions, SaveEventArgs, SeriesColorRequestedArgs, TooltipShowingEventArgs } from "../RevealView";
+import { RevealViewDefaults } from "../RevealView/RevealViewDefaults";
+import styles from "./reveal-view.styles";
+import { PropertyValueMap, html } from "lit";
 import { DashboardLoader } from "../../utilties/DashboardLoader";
-import { RevealViewOptions } from "./Options";
 import { MenuItem } from "../../core";
-import { DashboardFilters } from "./Interfaces/DashboardFilters";
+import { getRVDataSources } from "../../utilties/DataSourceFactory";
 
 declare let $: any;
 
-export class RevealView {
+//this is an experiemental component to see if we can wrap the RevealView component in a web component
+@customElement("rv-reveal-view")
+export class RvRevealView extends RvElement {
+    static override styles = styles;
+
     private _revealView: any = null;
-    //static defaultOptions: RevealViewOptions = RevealViewDefaults;
+    private _mergedOptions: RevealViewOptions = {};
 
     /**
-     * Gets the underlying RevealView RVDashboard object.
+     * Gets or sets the dashboard to display in the RevealView component.
      */
-    get dashboard(): any {
-        return this._revealView.dashboard;
-    }
+    @property({ type: String }) dashboard: string | unknown = "";
+
+    /**
+     * Gets or sets the options for the RevealView component.
+     */
+    @property({ type: Object, attribute: false }) options: RevealViewOptions = {};
 
     /**
      * Gets the dashboard date filter.
@@ -38,11 +44,6 @@ export class RevealView {
     }
 
     /**
-     * Gets or sets the options for the dashboard viewer.
-     */
-    options: RevealViewOptions = {};
-
-    /**
      * Represents an event that is triggered when a dashboard link is requested.
      *
      * @event
@@ -50,6 +51,7 @@ export class RevealView {
      * @param {DashboardLinkRequestedArgs} args
      */
     dashboardLinkRequested?: (args: DashboardLinkRequestedArgs) => string;
+
     /**
      * Represents an event that is triggered when the data loading process starts.
      *
@@ -58,6 +60,7 @@ export class RevealView {
      * @param {DataLoadingEventArgs} args
      */
     onDataLoading?: (args: DataLoadingEventArgs) => void;
+
     /**
      * Represents an event that is triggered when a data point in the visualization is clicked by the user.
      *
@@ -66,6 +69,7 @@ export class RevealView {
      * @param {DataPointClickedEventArgs} args
      */
     onDataPointClicked?: (args: DataPointClickedEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the data source dialog is opening.
      *
@@ -74,6 +78,7 @@ export class RevealView {
      * @param {DataSourceDialogOpeningEventArgs} args
      */
     onDataSourceDialogOpening?: (args: DataSourceDialogOpeningEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the data sources are requested.
      * 
@@ -83,6 +88,7 @@ export class RevealView {
      * @returns {any} - A RevealDataSources object containing the data sources and data source items.
      */
     dataSourcesRequested?: (args: DataSourcesRequestedArgs) => any;
+
     /**
      * Represents an event that is triggered when the visualization editor is closed.
      * 
@@ -91,6 +97,7 @@ export class RevealView {
      * @param {EditorClosedEventArgs} args
      */
     onEditorClosed?: (args: EditorClosedEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the visualization editor is closing.
      * 
@@ -99,6 +106,7 @@ export class RevealView {
      * @param {EditorClosingEventArgs} args
      */
     onEditorClosing?: (args: EditorClosingEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the visualization editor is opened.
      * 
@@ -107,6 +115,7 @@ export class RevealView {
      * @param {EditorOpenedEventArgs} args
      */
     onEditorOpened?: (args: EditorOpenedEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the visualization editor is opening.
      * 
@@ -115,6 +124,7 @@ export class RevealView {
      * @param {EditorOpeningEventArgs} args
      */
     onEditorOpening?: (args: EditorOpeningEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the fields are initializing.
      * 
@@ -123,6 +133,7 @@ export class RevealView {
      * @param {FieldsInitializingEvent} args
      */
     onFieldsInitializing?: (args: FieldsInitializingEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the image is exported.
      * 
@@ -131,6 +142,7 @@ export class RevealView {
      * @param {ImageExportedEventArgs} args
      */
     onImageExported?: (image: ImageExportedEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the RevealView is initialized.
      * 
@@ -138,6 +150,7 @@ export class RevealView {
      * @type {() => void}
      */
     onInitialized?: () => void;
+
     /**
      * Represents an event that is triggered when the link dialog is opening.
      * 
@@ -145,7 +158,8 @@ export class RevealView {
      * @type {(args: LinkSelectionDialogOpeningEventArgs) => void}
      * @param {LinkSelectionDialogOpeningEventArgs} args
      */
-    onLinkSelectionDialogOpening?: (args: LinkSelectionDialogOpeningEventArgs) => void;  
+    onLinkSelectionDialogOpening?: (args: LinkSelectionDialogOpeningEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the menu is opening.
      * 
@@ -154,6 +168,7 @@ export class RevealView {
      * @param {MenuOpeningEventArgs} args
      */
     onMenuOpening?: (args: MenuOpeningEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the dashboard is saved.
      * 
@@ -162,6 +177,7 @@ export class RevealView {
      * @param {SaveEventArgs} args
      */
     onSave?: (args: SaveEventArgs) => void;
+
     /**
      * Represents an event that is triggered when the series color is requested.
      * 
@@ -171,6 +187,7 @@ export class RevealView {
      * @returns {string} - The color to use for the series.
      */
     seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
+
     /**
      * Represents an event that is triggered when the tooltip is showing.
      * 
@@ -180,15 +197,14 @@ export class RevealView {
      */
     onTooltipShowing?: (args: TooltipShowingEventArgs) => void;
 
-    constructor(selector: string, dashboard?: string | unknown, options?: RevealViewOptions) {
-        $.ig.RevealSdkSettings.enableNewCharts = true;
-        $.ig.RevealSdkSettings.enableActionsOnHoverTooltip = true;
-        $.ig.RevealSdkSettings.interactiveFilteringEnabled = true;
-        this.init(selector, dashboard, options);
+    protected override firstUpdated(changedProperties: Map<PropertyKey, unknown>): void {
+        this.init(this.dashboard, this.options);
     }
 
-    private async init(selector: string, dashboard?: string | unknown, options?: RevealViewOptions): Promise<void> {
+    private async init(dashboard?: string | unknown, options?: RevealViewOptions): Promise<void> {
         const rvDashboard = await this.loadRVDashboard(dashboard);
+
+        const selector = this.renderRoot.querySelector('#rv-viewer');
         this._revealView = new $.ig.RevealView(selector);
         this._revealView.interactiveFilteringEnabled = true;
 
@@ -202,7 +218,7 @@ export class RevealView {
         //todo: there is a bug in the Reveal SDK where the saved event args.isNew is always false if the dashboard property is set to null or undefined
         if (dashboard) {
             this._revealView.dashboard = rvDashboard;
-        }        
+        }
         this.updateOptions(options);
         this.initializeEvents();
 
@@ -211,184 +227,89 @@ export class RevealView {
             this.onInitialized();
         }
     }
-    
+
     private loadRVDashboard(dashboard?: string | unknown): Promise<unknown> {
-        return DashboardLoader.load(dashboard); 
+        return DashboardLoader.load(dashboard);
     }
 
-    /**
-     * Gets the RVDashboard instance from the underlying RevealView object.
-     * @returns The RVDashboard instance.
-     */
-    getRVDashboard(): any {
-        if (this._revealView){
-            return this._revealView.dashboard;
-        }
-        else {
-            return null;
-        }
-    }
+    private updateOptions(options: RevealViewOptions | undefined) {
 
-    /**
-     * Export the dashboard to Excel.
-     */
-    exportToExcel(): void {
-        this._revealView._dashboardView.exportToExcel();
-    }
-
-    /**
-     * Export the dashboard to an image.
-     * @param showDialog - If true, the export dialog will be shown. If false, the image will be exported directly.
-     * @returns A promise that resolves to the exported image element or null.
-     */
-    exportToImage(showDialog = true): void | Promise<Element | null> {
-
-        if (showDialog) {
-            this._revealView._dashboardView.exportImage();
+        if (!this._revealView) {
             return;
         }
 
-        return this._revealView.toImage();
+        this._mergedOptions = merge({}, RevealViewDefaults, options);        
+
+        this._revealView.canEdit = this._mergedOptions.canEdit;
+        this._revealView.canSave = this._mergedOptions.canSave;
+        this._revealView.canSaveAs = this._mergedOptions.canSaveAs;
+        this._revealView.serverSideSave = this._mergedOptions.saveOnServer;
+        this._revealView.startInEditMode = this._mergedOptions.startInEditMode;
+        this._revealView.startWithNewVisualization = this._mergedOptions.startWithNewVisualization;
+
+        //header
+        this._revealView.showHeader = this._mergedOptions.header!.showHeader;
+        this._revealView.canAddVisualization = this._mergedOptions.header!.canAddVisualization;
+        this._revealView.showMenu = this._mergedOptions.header!.menu!.showMenu;
+        this._revealView.showExportToExcel = this._mergedOptions.header!.menu!.exportToExcel;
+        this._revealView.showExportImage = this._mergedOptions.header!.menu!.exportToImage;
+        this._revealView.showExportToPDF = this._mergedOptions.header!.menu!.exportToPdf;
+        this._revealView.showExportToPowerpoint = this._mergedOptions.header!.menu!.exportToPowerPoint;
+        this._revealView.showRefresh = this._mergedOptions.header!.menu!.refresh;
+
+        //filters
+        this._revealView.showFilters = this._mergedOptions.filters!.showFilters;
+        this._revealView.canAddDashboardFiter = this._mergedOptions.filters!.addDashboardFiter;
+        this._revealView.canAddDateFilter = this._mergedOptions.filters!.addDateFilter;
+        this._revealView.interactiveFilteringEnabled = this._mergedOptions.filters!.interactiveFiltering;
+
+        //visualizations
+        this._revealView.canMaximizeVisualization = this._mergedOptions.visualizations!.canMaximize;
+        this._revealView.categoryGroupingSeparator = this._mergedOptions.visualizations!.categoryGroupingSeparator;
+        this._revealView.crosshairsEnabled = this._mergedOptions.visualizations!.crosshairs;
+        this._revealView.hoverTooltipsEnabled = this._mergedOptions.visualizations!.hoverTooltips;
+        this._revealView.showChangeVisualization = this._mergedOptions.visualizations!.changeChartType;
+        this._revealView.showStatisticalFunctions = this._mergedOptions.visualizations!.statisticalFunctions;
+        this._revealView.canCopyVisualization = this._mergedOptions.visualizations!.menu!.copy;
+        this._revealView.canDuplicateVisualization = this._mergedOptions.visualizations!.menu!.duplicate;
+
+        //dataSourceDialog
+        this._revealView.showDataSourceSelectionDialogSearch = this._mergedOptions.dataSourceDialog!.showSearch;
+
+        //editor
+        if (this._mergedOptions.editor!.chartTypes) {
+            this._revealView.chartTypes = this._mergedOptions.editor!.chartTypes(this._revealView.chartTypes);
+        }
+
+        if (this._mergedOptions.editor!.chartTypesToRemove) {
+            this._revealView.chartTypes = this._revealView.chartTypes.filter((x: any) => !this._mergedOptions.editor!.chartTypesToRemove!.includes(x.chartType));
+        }
+
+        if (this._mergedOptions.editor!.chartTypesToAdd) {
+            this._revealView.chartTypes.push(...this._mergedOptions.editor!.chartTypesToAdd);
+        }
+
+        if (typeof this._mergedOptions.editor!.defaultChartType === "string") {
+            const isValidChartType = Object.values(ChartType).includes(this._mergedOptions.editor!.defaultChartType as ChartType);
+            this._revealView.defaultChartType = isValidChartType ? this._mergedOptions.editor!.defaultChartType : undefined;
+            this._revealView.defaultCustomChartType = !isValidChartType ? this._mergedOptions.editor!.defaultChartType : undefined;
+        }
+        else {
+            this._revealView.defaultChartType = this._mergedOptions.editor!.defaultChartType;
+        }
+
+        this._revealView.canAddCalculatedFields = this._mergedOptions.editor!.addCalculatedFields;
+        this._revealView.canAddPostCalculatedFields = this._mergedOptions.editor!.addPostCalculatedFields;
+        this._revealView.showDataBlending = this._mergedOptions.editor!.dataBlending;
+        this._revealView.showEditDataSource = this._mergedOptions.editor!.editDataSource;
+        this._revealView.showMachineLearningModelsIntegration = this._mergedOptions.editor!.machineLearning;
     }
 
-    /**
-     * Export the dashboard to PDF.
-     */
-    exportToPdf(): void {
-        this._revealView._dashboardView.exportToFormat("pdf");
-    }
-
-    /**
-     * Export the dashboard to PowerPoint.
-     */
-    exportToPowerPoint(): void {
-        this._revealView._dashboardView.exportToFormat("pptx");
-    }
-
-    /**
-     * Refreshes the data in the dashboard.
-     */
-    refreshData(): void
-    /**
-     * Refreshes the data of a visualization in the dashboard.
-     * @param id The ID of the visualization to refresh.
-     */
-    refreshData(id: string): void
-    /**
-     * Refreshes the data of a visualization in the dashboard.
-     * @param index The index of the visualization to refresh.
-     */
-    refreshData(index: number): void
-    refreshData(input?: string | number) : void {
-        if (typeof input === "string") {
-            this._revealView._dashboardView.refreshWidget(input);
-        } else if (typeof input === "number") {
-            this._revealView._dashboardView.refreshWidget(this._revealView.dashboard.visualizations[input].id);
-        } else {
-            this._revealView.refreshDashboardData();
-        }     
-    }
-
-    /**
-     * Updates the dashboard with a new dashboard object.
-     * @param dashboard The dashboard to load. Can be a string (dashboard ID or name) or an object such as an RVDashboard or RdashDocument.
-     */
-    async updateDashboard(dashboard: string | unknown): Promise<void> {
+    private async updateDashboard(dashboard: string | unknown): Promise<void> {
         if (!this._revealView) {
             return;
         }
         this._revealView.dashboard = await this.loadRVDashboard(dashboard);
-    }
-
-    /**
-     * Updates the options of the dashboard viewer.
-     * @param options 
-     */
-    updateOptions(options: RevealViewOptions | undefined) {
-
-        if (!this._revealView) {
-            return;
-        }
-
-        this.options = merge({}, RevealViewDefaults, options);
-
-        this._revealView.canEdit = this.options.canEdit;
-        this._revealView.canSave = this.options.canSave;
-        this._revealView.canSaveAs = this.options.canSaveAs;
-        this._revealView.serverSideSave = this.options.saveOnServer;
-        this._revealView.startInEditMode = this.options.startInEditMode;
-        this._revealView.startWithNewVisualization = this.options.startWithNewVisualization;
-
-        //header
-        this._revealView.showHeader = this.options.header!.showHeader;
-        this._revealView.canAddVisualization = this.options.header!.canAddVisualization;
-        this._revealView.showMenu = this.options.header!.menu!.showMenu;
-        this._revealView.showExportToExcel = this.options.header!.menu!.exportToExcel;
-        this._revealView.showExportImage = this.options.header!.menu!.exportToImage;
-        this._revealView.showExportToPDF = this.options.header!.menu!.exportToPdf;
-        this._revealView.showExportToPowerpoint = this.options.header!.menu!.exportToPowerPoint;
-        this._revealView.showRefresh = this.options.header!.menu!.refresh;
-
-        //filters
-        this._revealView.showFilters = this.options.filters!.showFilters;
-        this._revealView.canAddDashboardFiter = this.options.filters!.addDashboardFiter;
-        this._revealView.canAddDateFilter = this.options.filters!.addDateFilter;
-        this._revealView.interactiveFilteringEnabled = this.options.filters!.interactiveFiltering;
-
-        //visualizations
-        this._revealView.canMaximizeVisualization = this.options.visualizations!.canMaximize;
-        this._revealView.categoryGroupingSeparator = this.options.visualizations!.categoryGroupingSeparator;
-        this._revealView.crosshairsEnabled = this.options.visualizations!.crosshairs;
-        this._revealView.hoverTooltipsEnabled = this.options.visualizations!.hoverTooltips;
-        this._revealView.showChangeVisualization = this.options.visualizations!.changeChartType;
-        this._revealView.showStatisticalFunctions = this.options.visualizations!.statisticalFunctions;
-        this._revealView.canCopyVisualization = this.options.visualizations!.menu!.copy;
-        this._revealView.canDuplicateVisualization = this.options.visualizations!.menu!.duplicate;
-
-        //dataSourceDialog
-        this._revealView.showDataSourceSelectionDialogSearch = this.options.dataSourceDialog!.showSearch;
-
-        //editor
-        if (this.options.editor!.chartTypes) {
-            this._revealView.chartTypes = this.options.editor!.chartTypes(this._revealView.chartTypes);
-        }
-        
-        if (this.options.editor!.chartTypesToRemove) {
-            this._revealView.chartTypes = this._revealView.chartTypes.filter((x: any) => !this.options.editor!.chartTypesToRemove!.includes(x.chartType));
-        }
-
-        if (this.options.editor!.chartTypesToAdd) {
-            this._revealView.chartTypes.push(...this.options.editor!.chartTypesToAdd);
-        }
-
-        if (typeof this.options.editor!.defaultChartType === "string") {
-            const isValidChartType = Object.values(ChartType).includes(this.options.editor!.defaultChartType as ChartType);
-            this._revealView.defaultChartType = isValidChartType ? this.options.editor!.defaultChartType : undefined;
-            this._revealView.defaultCustomChartType = !isValidChartType ? this.options.editor!.defaultChartType : undefined;
-        } 
-        else {            
-            this._revealView.defaultChartType = this.options.editor!.defaultChartType;
-        }
-
-        this._revealView.canAddCalculatedFields = this.options.editor!.addCalculatedFields;
-        this._revealView.canAddPostCalculatedFields = this.options.editor!.addPostCalculatedFields;
-        this._revealView.showDataBlending = this.options.editor!.dataBlending;
-        this._revealView.showEditDataSource = this.options.editor!.editDataSource;
-        this._revealView.showMachineLearningModelsIntegration = this.options.editor!.machineLearning;
-    }
-
-    /**
-     * Calls updateSize on the underlying RevealView.
-     */
-    updateLayout() {
-        this._revealView.updateSize();
-    }
-
-    /**
-     * Updates the theme of the dashboard viewer.
-     */
-    updateTheme() {
-        this._revealView.refreshTheme();
     }
 
     private initializeEvents() {
@@ -513,4 +434,94 @@ export class RevealView {
         };
     }
 
+    /**
+     * Gets the RVDashboard instance from the underlying RevealView object.
+     * @returns The RVDashboard instance.
+     */
+    getRVDashboard(): any {
+        if (this._revealView) {
+            return this._revealView.dashboard;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Export the dashboard to Excel.
+     */
+    exportToExcel(): void {
+        this._revealView._dashboardView.exportToExcel();
+    }
+
+    /**
+     * Export the dashboard to an image.
+     * @param showDialog - If true, the export dialog will be shown. If false, the image will be exported directly.
+     * @returns A promise that resolves to the exported image element or null.
+     */
+    exportToImage(showDialog = true): void | Promise<Element | null> {
+
+        if (showDialog) {
+            this._revealView._dashboardView.exportImage();
+            return;
+        }
+
+        return this._revealView.toImage();
+    }
+
+    /**
+     * Export the dashboard to PDF.
+     */
+    exportToPdf(): void {
+        this._revealView._dashboardView.exportToFormat("pdf");
+    }
+
+    /**
+     * Export the dashboard to PowerPoint.
+     */
+    exportToPowerPoint(): void {
+        this._revealView._dashboardView.exportToFormat("pptx");
+    }
+
+    /**
+     * Refreshes the data in the dashboard.
+     * If no parameter is provided, the entire dashboard is refreshed.
+     * If a string ID is provided, the visualization with that ID is refreshed.
+     * If a number index is provided, the visualization at that index is refreshed.
+     * @param input The ID or index of the visualization to refresh, or nothing to refresh the entire dashboard.
+     */
+    refreshData(input?: string | number): void {
+        if (typeof input === "string") {
+            this._revealView._dashboardView.refreshWidget(input);
+        } else if (typeof input === "number") {
+            this._revealView._dashboardView.refreshWidget(this._revealView.dashboard.visualizations[input].id);
+        } else {
+            this._revealView.refreshDashboardData();
+        }
+    }
+
+    protected override updated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
+        const dashboardChanged = changedProperties.has("dashboard") && this.dashboard !== undefined;
+        const optionsChanged = changedProperties.has("options") && this.options !== undefined;
+
+        if (dashboardChanged) {
+            this.updateDashboard(this.dashboard);
+        }
+
+        if (optionsChanged) {
+            this.updateOptions(this.options);
+        }
+    }
+
+    protected override render(): unknown {
+        return html`
+            <div id="rv-viewer"></div>
+        `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'rv-reveal-view': RvRevealView;
+    }
 }

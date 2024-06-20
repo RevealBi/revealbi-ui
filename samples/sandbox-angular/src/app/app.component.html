@@ -1,7 +1,10 @@
-<div style="height: 100%;">
-    <reveal-view #revealView [dashboard]="dashboard" [options]="options" (save)="onSave($event)"></reveal-view>
+<button (click)="doSomething()">Do something</button>
 
+<div style="height: 100%;">
+    <!-- <reveal-view #revealView [dashboard]="dashboard" [options]="options" (save)="onSave($event)"></reveal-view> -->
     <!-- <visualization-viewer [dashboard]="dashboard" [visualization]="visualization"></visualization-viewer> -->
+
+    <rv-visualization-viewer #vizViewer [dashboard]="dashboard" [visualization]="visualization" [options]="vizOptions"></rv-visualization-viewer>
 </div>
 
 <rv-dialog #dialog [open]="isOpen" [title]="title">

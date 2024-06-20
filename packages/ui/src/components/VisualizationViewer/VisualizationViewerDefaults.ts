@@ -1,6 +1,6 @@
 import { VisualizationViewerOptions } from "./VisualizationViewerOptions";
 
-export const VisualizationViewerDefaults: VisualizationViewerOptions = {
+export const VisualizationViewerDefaults: VisualizationViewerOptions = Object.freeze({
     categoryGroupingSeparator: " - ",
     crosshairs: false,
     hoverTooltips: true,
@@ -16,4 +16,4 @@ export const VisualizationViewerDefaults: VisualizationViewerOptions = {
         showMenu: false,
         refresh: true,
     }
-}
+});
