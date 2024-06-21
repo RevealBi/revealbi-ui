@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Sandbox</title>
-    <base href="/" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  </head>
-  <body>
+<head>
+  <meta charset="utf-8" />
+  <title>Sandbox</title>
+  <base href="/" />
 
-    <button id="button">Do Something</button>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+</head>
 
-    <!-- <div id="viewer" style='height: calc(100vh - 0px); position:relative;'></div> -->
-     <div style="height: 100%; overflow-y: auto;">
+<body>
 
-     
+  <button id="button">Do Something</button>
 
-    <rv-visualization-viewer id="viz-viewer" dashboard="Sales" visualization="Leads by Year" style="height: 500px;"></rv-visualization-viewer>
-
+  <div style="height: 100%; overflow-y: auto;">
+    <rv-reveal-view id="revealView" dashboard="Sales"></rv-reveal-view>
+    <!-- <rv-visualization-viewer id="viz-viewer" dashboard="Sales" visualization="Leads by Year" style="height: 500px;"></rv-visualization-viewer>
     <rv-visualization-viewer id="viz-viewer2" dashboard="Sales" visualization="5" style="height: 500px;"></rv-visualization-viewer>
-
-    <rv-visualization-viewer id="viz-viewer3" dashboard="Sales" visualization="4" style="height: 500px;"></rv-visualization-viewer>
-
+    <rv-visualization-viewer id="viz-viewer3" dashboard="Sales" visualization="4" style="height: 500px;"></rv-visualization-viewer> -->
   </div>
 
-    <rv-dialog id="dialog" title="This is my title">
-      <h1>This is content</h1>
-      <div slot="footer">
-        <button class="rv-button">OK</button>
-        <button class="rv-button" onclick="document.getElementById('dialog').open = false;">Cancel</button>
-      </div>
-    </rv-dialog>
+  <rv-dialog id="dialog" title="This is my title">
+    <h1>This is content</h1>
+    <div slot="footer">
+      <button class="rv-button">OK</button>
+      <button class="rv-button" onclick="document.getElementById('dialog').open = false;">Cancel</button>
+    </div>
+  </rv-dialog>
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>    
-    <script src="https://dl.revealbi.io/reveal/libs/1.6.6/infragistics.reveal.js"></script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+  <script src="https://dl.revealbi.io/reveal/libs/1.6.6/infragistics.reveal.js"></script>
+</body>
+
 </html>

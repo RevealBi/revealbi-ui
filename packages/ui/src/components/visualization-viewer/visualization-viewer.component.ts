@@ -1,17 +1,16 @@
 import { customElement, property } from "lit/decorators.js";
-import { RvElement } from "../../core/rv-element";
-import { merge } from "../../utilties/Merge";
-import { VisualizationViewerOptions } from "../VisualizationViewer";
-import { VisualizationViewerDefaults } from "../VisualizationViewer/VisualizationViewerDefaults";
-import { PropertyValueMap, html } from "lit";
-import { DashboardLoader } from "../../utilties/DashboardLoader";
+import { merge } from "../../utilties/merge";
+import { LitElement, PropertyValueMap, html } from "lit";
+import { VisualizationViewerOptions } from "./options/visualization-viewer-options";
+import { VisualizationViewerDefaults } from "./options/visualization-viewer-options-defaults";
+import { DashboardLoader } from "../../utilties/dashboard-loader";
 import styles from "./visualization-viewer.styles";
 
 declare let $: any;
 
 //this is an experiemental component to see if we can wrap the RevealView component in a web component
 @customElement("rv-visualization-viewer")
-export class RvVisualizationViewer extends RvElement {
+export class RvVisualizationViewer extends LitElement {
     static override styles = styles;
 
     private _revealView: any = null;

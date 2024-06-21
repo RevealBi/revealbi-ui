@@ -1,23 +1,26 @@
 import { customElement, property } from "lit/decorators.js";
-import { RvElement } from "../../core/rv-element";
-import { merge } from "../../utilties/Merge";
-import { ChartType, DashboardFilters, DashboardLinkRequestedArgs, DataLoadingEventArgs, DataPointClickedEventArgs, DataSourceDialogOpeningEventArgs, DataSourcesRequestedArgs, EditorClosedEventArgs, EditorClosingEventArgs, EditorOpenedEventArgs, EditorOpeningEventArgs, FieldsInitializingEventArgs, ImageExportedEventArgs, LinkSelectionDialogOpeningEventArgs, MenuOpeningEventArgs, RevealViewOptions, SaveEventArgs, SeriesColorRequestedArgs, TooltipShowingEventArgs } from "../RevealView";
-import { RevealViewDefaults } from "../RevealView/RevealViewDefaults";
+import { merge } from "../../utilties/merge";
+import { DashboardLinkRequestedArgs, DataLoadingEventArgs, DataPointClickedEventArgs, DataSourceDialogOpeningEventArgs, DataSourcesRequestedArgs, EditorClosedEventArgs, EditorClosingEventArgs, EditorOpenedEventArgs, EditorOpeningEventArgs, FieldsInitializingEventArgs, ImageExportedEventArgs, LinkSelectionDialogOpeningEventArgs, MenuOpeningEventArgs, SaveEventArgs, SeriesColorRequestedArgs, TooltipShowingEventArgs } from "./events";
 import styles from "./reveal-view.styles";
-import { PropertyValueMap, html } from "lit";
-import { DashboardLoader } from "../../utilties/DashboardLoader";
+import { LitElement, PropertyValueMap, html } from "lit";
+import { DashboardLoader } from "../../utilties/dashboard-loader";
 import { MenuItem } from "../../core";
-import { getRVDataSources } from "../../utilties/DataSourceFactory";
+import { getRVDataSources } from "../../utilties/data-source-factory";
+import { RevealViewOptions } from "./options/reveal-view-options";
+import { DashboardFilters } from "./interfaces/dashboard-filters";
+import { RevealViewDefaults } from "./options/reveal-view-options-defaults";
+import { ChartType } from "./enums";
 
 declare let $: any;
 
 //this is an experiemental component to see if we can wrap the RevealView component in a web component
 @customElement("rv-reveal-view")
-export class RvRevealView extends RvElement {
+export class RvRevealView extends LitElement {
     static override styles = styles;
 
     private _revealView: any = null;
     private _mergedOptions: RevealViewOptions = {};
+    private _eventListeners: Map<string, boolean> = new Map();
 
     /**
      * Gets or sets the dashboard to display in the RevealView component.
@@ -174,7 +177,7 @@ export class RvRevealView extends RvElement {
      * 
      * @event
      * @type {(args: SaveEventArgs) => void}
-     * @param {SaveEventArgs} args
+     * @param {SaveEventArgs
      */
     onSave?: (args: SaveEventArgs) => void;
 
@@ -209,11 +212,7 @@ export class RvRevealView extends RvElement {
         this._revealView.interactiveFilteringEnabled = true;
 
         //this event must be set BEFORE the dashboard is set
-        if (this.onDataLoading !== undefined) {
-            this._revealView.onDataLoading = (e: any) => {
-                this.onDataLoading?.(e);
-            }
-        }
+        this.assignEventHandler(this.onDataLoading, 'onDataLoading', (e: any) => e);        
 
         //todo: there is a bug in the Reveal SDK where the saved event args.isNew is always false if the dashboard property is set to null or undefined
         if (dashboard) {
@@ -226,6 +225,9 @@ export class RvRevealView extends RvElement {
         if (this.onInitialized) {
             this.onInitialized();
         }
+        else if (this._eventListeners.get("onInitialized")) {
+            this.dispatchEvent(new CustomEvent("onInitialized"));
+        }          
     }
 
     private loadRVDashboard(dashboard?: string | unknown): Promise<unknown> {
@@ -313,84 +315,29 @@ export class RvRevealView extends RvElement {
     }
 
     private initializeEvents() {
-        if (this.onDataPointClicked !== undefined) {
-            this._revealView.onVisualizationDataPointClicked = (visualization: any, cell: any, row: any) => {            
-                    this.onDataPointClicked?.({ visualization: visualization, cell: cell, row: row });            
-            };
-        }
 
-        if (this.onDataSourceDialogOpening !== undefined) {
-            this._revealView.onDataSourceSelectionDialogShowing = (e: any) => {
-                this.onDataSourceDialogOpening?.(e);
-            }
-        }
-
-        if (this.onFieldsInitializing !== undefined) {
-            this._revealView.onFieldsInitializing = (e: any) => {
-                this.onFieldsInitializing?.(e);
-            }            
-        }
-
-        if (this.onTooltipShowing !== undefined) {
-            this._revealView.onTooltipShowing = (e: any) => {
-                this.onTooltipShowing?.(e);
-            }
-        }
-
-        if (this.onEditorClosed !== undefined) {
-            this._revealView.onVisualizationEditorClosed = (e: any) => {
-                this.onEditorClosed?.(e);
-            }
-        }
-
-        if (this.onEditorClosing !== undefined) {
-            this._revealView.onVisualizationEditorClosing = (e: any) => {
-                this.onEditorClosing?.(e);
-            }
-        }
-        
-        if (this.onEditorOpened !== undefined) {
-            this._revealView.onVisualizationEditorOpened = (e: any) => {
-                this.onEditorOpened?.(e);
-            }
-        }
-        
-        if (this.onEditorOpening !== undefined) {
-            this._revealView.onVisualizationEditorOpening = (e: any) => {
-                this.onEditorOpening?.(e);
-            }
-        }
-
-        if (this.onImageExported !== undefined) {
-            this._revealView.onImageExported = (e: any) => {
-                this.onImageExported?.({
-                    image: e,
-                });
-            }
-        }
-
-        if (this.onLinkSelectionDialogOpening !== undefined) {
-            this._revealView.onDashboardSelectorRequested = (e: any) => {
-                this.onLinkSelectionDialogOpening?.(e);
-            }
-        }
-
-        if (this.onSave !== undefined) {
-            this._revealView.onSave = (rv: any, e: any) => {
-                this.onSave?.(e);
-            }
-        }
-
-        if (this.seriesColorRequested !== undefined) {
-            this._revealView.onVisualizationSeriesColorAssigning = (visualization: any, defaultColor: any, fieldName: any, categoryName: any) => {
-                return this.seriesColorRequested?.({
-                    visualization: visualization,
-                    defaultColor: defaultColor,
-                    fieldName: fieldName,
-                    categoryName: categoryName
-                });
-            }
-        }        
+        this.assignEventHandler(this.onDataPointClicked, 'onVisualizationDataPointClicked', (visualization: any, cell: any, row: any) => {
+            return { visualization: visualization, cell: cell, row: row };
+        });
+        this.assignEventHandler(this.onDataSourceDialogOpening, 'onDataSourceSelectionDialogShowing', (e: any) => e);
+        this.assignEventHandler(this.onFieldsInitializing, 'onFieldsInitializing', (e: any) => e);
+        this.assignEventHandler(this.onTooltipShowing, 'onTooltipShowing', (e: any) => e);
+        this.assignEventHandler(this.onEditorClosed, 'onVisualizationEditorClosed', (e: any) => e);
+        this.assignEventHandler(this.onEditorClosing, 'onVisualizationEditorClosing', (e: any) => e);
+        this.assignEventHandler(this.onEditorOpened, 'onVisualizationEditorOpened', (e: any) => e);
+        this.assignEventHandler(this.onEditorOpening, 'onVisualizationEditorOpening', (e: any) => e);
+        this.assignEventHandler(this.onImageExported, 'onImageExported', (e: any) => {
+            return { image: e };
+        });
+        this.assignEventHandler(this.onLinkSelectionDialogOpening, 'onDashboardSelectorRequested', (e: any) => e);
+        this.assignEventHandler(this.onSave, 'onSave', (rv: any, e: any) => e);
+        this.assignEventHandler(this.seriesColorRequested, 'onVisualizationSeriesColorAssigning', (e: any) => {
+            return { 
+                visualization: e.visualization, 
+                defaultColor: e.defaultColor, 
+                fieldName: e.fieldName, 
+                categoryName: e.categoryName };
+        });
 
         this._revealView.onMenuOpening = (viz: any, e: any) => {
             const createMenuItems = (items: MenuItem[], clickCallback: (item: any) => void) => {
@@ -401,10 +348,10 @@ export class RvRevealView extends RvElement {
             };
         
             if (viz === null) {
-                const items = this.options.header!.menu!.items!;
+                const items = this._mergedOptions.header!.menu!.items!;
                 createMenuItems(items, item => item.click());
             } else {
-                const vizItems = this.options.visualizations!.menu!.items!;
+                const vizItems = this._mergedOptions.visualizations!.menu!.items!;
                 createMenuItems(vizItems, vizItem => vizItem.click(viz));
             }
         
@@ -415,14 +362,14 @@ export class RvRevealView extends RvElement {
 
         this._revealView.onDataSourcesRequested = (onComplete: any, trigger: any) => {
             //get the data source from the options first
-            const { dataSources, dataSourceItems } = getRVDataSources(this.options.dataSources);
+            const { dataSources, dataSourceItems } = getRVDataSources(this._mergedOptions.dataSources);
             //if a custom data source handler is provided, add the data sources from it
             if (this.dataSourcesRequested !== undefined) {
                 const result = this.dataSourcesRequested({trigger: trigger });
                 dataSources.push(...result.dataSources);
                 dataSourceItems.push(...result.dataSourceItems);
             }
-            onComplete(new $.ig.RevealDataSources(dataSources, dataSourceItems, this.options.dataSourceDialog!.showExistingDataSources));
+            onComplete(new $.ig.RevealDataSources(dataSources, dataSourceItems, this._mergedOptions.dataSourceDialog!.showExistingDataSources));
         };
 
         this._revealView.onLinkedDashboardProviderAsync = (dashboardId: string, title: string) => {
@@ -432,6 +379,18 @@ export class RvRevealView extends RvElement {
             }
             return $.ig.RVDashboard.loadDashboard(dashbordLink);
         };
+    }
+
+    private assignEventHandler(eventProperty: Function | undefined, eventListenerName: string, handler: Function) {
+        if (eventProperty !== undefined || this._eventListeners.get(eventListenerName)) {
+            this._revealView[eventListenerName] = (...args: any[]) => {
+                if (eventProperty) {
+                    eventProperty(handler(...args));
+                } else {
+                    this.dispatchEvent(new CustomEvent(eventListenerName, { detail: handler(...args) }));
+                }
+            };
+        }
     }
 
     /**
@@ -511,6 +470,13 @@ export class RvRevealView extends RvElement {
         if (optionsChanged) {
             this.updateOptions(this.options);
         }
+    }
+
+    override addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void {
+        super.addEventListener(type, listener, options);     
+        if (!this._eventListeners.has(type)) {
+            this._eventListeners.set(type, true);
+        }        
     }
 
     protected override render(): unknown {

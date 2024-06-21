@@ -1,1 +1,2 @@
-export { RvVisualizationViewer } from "./visualization-viewer.component";
+export * from "./options";
+export * from "./visualization-viewer.component";

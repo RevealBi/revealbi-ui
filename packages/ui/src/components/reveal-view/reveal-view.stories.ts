@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 import { doc } from 'prettier';
+import { RevealViewDefaults } from './options/reveal-view-options-defaults';
 import './index';
-import { RevealViewDefaults } from '../RevealView/RevealViewDefaults';
-import { merge } from '../../utilties/Merge';
 
 // This default export determines where your story goes in the story list
 const meta: Meta = {
