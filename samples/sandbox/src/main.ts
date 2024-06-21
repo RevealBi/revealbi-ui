@@ -1,5 +1,6 @@
+import { ChartType, DataSourcesRequestedArgs, RevealSdkSettings, RevealViewOptions, RvDialog, RvRevealView, RvVisualizationViewer, SeriesColorRequestedArgs} from "@revealbi/ui";
 
-import { ChartType, RevealSdkSettings, RevealViewOptions, RvDialog, RvRevealView, RvVisualizationViewer} from "@revealbi/ui";
+declare let $: any;
 
 RevealSdkSettings.serverUrl = "https://samples.revealbi.io/upmedia-backend/reveal-api/";
 
@@ -27,6 +28,13 @@ const options: RevealViewOptions = {
 };
 
 const revealView = document.getElementById('revealView') as RvRevealView;
+revealView.options = options;
+
+// revealView.addEventListener('seriesColorRequested', (e: any) => {
+//     console.log('Event fired');
+//     console.log(e.detail);
+//     return 'red';
+// })
 
 //const dialog = document.getElementById('dialog') as RvDialog;
 //dialog.open = true;

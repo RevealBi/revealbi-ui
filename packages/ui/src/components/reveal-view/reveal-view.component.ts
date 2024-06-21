@@ -47,13 +47,46 @@ export class RvRevealView extends LitElement {
     }
 
     /**
-     * Represents an event that is triggered when a dashboard link is requested.
+     * Represents a function that is triggered when a dashboard link is requested.
      *
-     * @event
+     * @function
      * @type {(args: DashboardLinkRequestedArgs) => string}
      * @param {DashboardLinkRequestedArgs} args
      */
     dashboardLinkRequested?: (args: DashboardLinkRequestedArgs) => string;
+
+    /**
+     * Represents a function that is triggered when the data sources are requested.
+     *  
+     * @function
+     * @type {(args: DataSourcesRequestedArgs) => any}
+     * @param {DataSourcesRequestedArgs} args
+     * @returns {any} - A RevealDataSources object containing the data sources and data source items.
+     * 
+     * @example
+     * ```typescript
+     * revealView.dataSourcesRequested = (args: DataSourcesRequestedArgs) => {
+     *    const restDataSource = new $.ig.RVRESTDataSource();
+     *    restDataSource.url = "https://excel2json.io/api/share/6e0f06b3-72d3-4fec-7984-08da43f56bb9";
+     *    restDataSource.title = "Sales by Category";
+     *    restDataSource.subtitle = "Excel2Json";
+     *    restDataSource.useAnonymousAuthentication = true;
+     * 
+     *    return { dataSources: [restDataSource], dataSourceItems: [] };
+     * }
+     * ```
+     */
+    dataSourcesRequested?: (args: DataSourcesRequestedArgs) => any; //todo: create interface for return type
+
+    /**
+     * Represents a function that is triggered when the series color is requested.
+     * 
+     * @function
+     * @type {(args: SeriesColorRequestedArgs) => string}
+     * @param {SeriesColorRequestedArgs} args
+     * @returns {string} - The color to use for the series.
+     */
+    seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
 
     /**
      * Represents an event that is triggered when the data loading process starts.
@@ -81,16 +114,6 @@ export class RvRevealView extends LitElement {
      * @param {DataSourceDialogOpeningEventArgs} args
      */
     onDataSourceDialogOpening?: (args: DataSourceDialogOpeningEventArgs) => void;
-
-    /**
-     * Represents an event that is triggered when the data sources are requested.
-     * 
-     * @event
-     * @type {(args: DataSourcesRequestedArgs) => any}
-     * @param {DataSourcesRequestedArgs} args
-     * @returns {any} - A RevealDataSources object containing the data sources and data source items.
-     */
-    dataSourcesRequested?: (args: DataSourcesRequestedArgs) => any;
 
     /**
      * Represents an event that is triggered when the visualization editor is closed.
@@ -182,16 +205,6 @@ export class RvRevealView extends LitElement {
     onSave?: (args: SaveEventArgs) => void;
 
     /**
-     * Represents an event that is triggered when the series color is requested.
-     * 
-     * @event
-     * @type {(args: SeriesColorRequestedArgs) => string}
-     * @param {SeriesColorRequestedArgs} args
-     * @returns {string} - The color to use for the series.
-     */
-    seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
-
-    /**
      * Represents an event that is triggered when the tooltip is showing.
      * 
      * @event
@@ -212,7 +225,7 @@ export class RvRevealView extends LitElement {
         this._revealView.interactiveFilteringEnabled = true;
 
         //this event must be set BEFORE the dashboard is set
-        this.assignEventHandler(this.onDataLoading, 'onDataLoading', (e: any) => e);        
+        this.assignEventHandler(this.onDataLoading, 'onDataLoading', 'onDataLoading', (e: any) => e);        
 
         //todo: there is a bug in the Reveal SDK where the saved event args.isNew is always false if the dashboard property is set to null or undefined
         if (dashboard) {
@@ -316,28 +329,32 @@ export class RvRevealView extends LitElement {
 
     private initializeEvents() {
 
-        this.assignEventHandler(this.onDataPointClicked, 'onVisualizationDataPointClicked', (visualization: any, cell: any, row: any) => {
+        this.assignEventHandler(this.onDataPointClicked, 'onDataPointClicked', 'onVisualizationDataPointClicked', (visualization: any, cell: any, row: any) => {
             return { visualization: visualization, cell: cell, row: row };
         });
-        this.assignEventHandler(this.onDataSourceDialogOpening, 'onDataSourceSelectionDialogShowing', (e: any) => e);
-        this.assignEventHandler(this.onFieldsInitializing, 'onFieldsInitializing', (e: any) => e);
-        this.assignEventHandler(this.onTooltipShowing, 'onTooltipShowing', (e: any) => e);
-        this.assignEventHandler(this.onEditorClosed, 'onVisualizationEditorClosed', (e: any) => e);
-        this.assignEventHandler(this.onEditorClosing, 'onVisualizationEditorClosing', (e: any) => e);
-        this.assignEventHandler(this.onEditorOpened, 'onVisualizationEditorOpened', (e: any) => e);
-        this.assignEventHandler(this.onEditorOpening, 'onVisualizationEditorOpening', (e: any) => e);
-        this.assignEventHandler(this.onImageExported, 'onImageExported', (e: any) => {
+        this.assignEventHandler(this.onDataSourceDialogOpening, 'onDataSourceDialogOpening', 'onDataSourceSelectionDialogShowing', (e: any) => e);
+        this.assignEventHandler(this.onFieldsInitializing, 'onFieldsInitializing', 'onFieldsInitializing', (e: any) => e);
+        this.assignEventHandler(this.onTooltipShowing, 'onTooltipShowing', 'onTooltipShowing', (e: any) => e);
+        this.assignEventHandler(this.onEditorClosed,'onEditorClosed', 'onVisualizationEditorClosed', (e: any) => e);
+        this.assignEventHandler(this.onEditorClosing, 'onEditorClosing', 'onVisualizationEditorClosing', (e: any) => e);
+        this.assignEventHandler(this.onEditorOpened, 'onEditorOpened', 'onVisualizationEditorOpened', (e: any) => e);
+        this.assignEventHandler(this.onEditorOpening, 'onEditorOpening', 'onVisualizationEditorOpening', (e: any) => e);
+        this.assignEventHandler(this.onImageExported, 'onImageExported', 'onImageExported', (e: any) => {
             return { image: e };
         });
-        this.assignEventHandler(this.onLinkSelectionDialogOpening, 'onDashboardSelectorRequested', (e: any) => e);
-        this.assignEventHandler(this.onSave, 'onSave', (rv: any, e: any) => e);
-        this.assignEventHandler(this.seriesColorRequested, 'onVisualizationSeriesColorAssigning', (e: any) => {
-            return { 
-                visualization: e.visualization, 
-                defaultColor: e.defaultColor, 
-                fieldName: e.fieldName, 
-                categoryName: e.categoryName };
-        });
+        this.assignEventHandler(this.onLinkSelectionDialogOpening, 'onLinkSelectionDialogOpening', 'onDashboardSelectorRequested', (e: any) => e);
+        this.assignEventHandler(this.onSave, 'onSave', 'onSave', (rv: any, e: any) => e);
+
+        if (this.seriesColorRequested !== undefined) {
+            this._revealView.onVisualizationSeriesColorAssigning = (visualization: any, defaultColor: any, fieldName: any, categoryName: any) => {
+                return this.seriesColorRequested?.({
+                    visualization: visualization,
+                    defaultColor: defaultColor,
+                    fieldName: fieldName,
+                    categoryName: categoryName
+                });
+            }
+        }      
 
         this._revealView.onMenuOpening = (viz: any, e: any) => {
             const createMenuItems = (items: MenuItem[], clickCallback: (item: any) => void) => {
@@ -354,10 +371,8 @@ export class RvRevealView extends LitElement {
                 const vizItems = this._mergedOptions.visualizations!.menu!.items!;
                 createMenuItems(vizItems, vizItem => vizItem.click(viz));
             }
-        
-            if (this.onMenuOpening !== undefined) {
-                this.onMenuOpening(e);
-            }
+
+            this.assignEventHandler(this.onMenuOpening, 'onMenuOpening', 'onMenuOpening', (e: any) => e);
         };
 
         this._revealView.onDataSourcesRequested = (onComplete: any, trigger: any) => {
@@ -381,13 +396,16 @@ export class RvRevealView extends LitElement {
         };
     }
 
-    private assignEventHandler(eventProperty: Function | undefined, eventListenerName: string, handler: Function) {
-        if (eventProperty !== undefined || this._eventListeners.get(eventListenerName)) {
+    private assignEventHandler(eventProperty: Function | undefined, eventName: string, eventListenerName: string, handler: Function) {
+        if (eventProperty !== undefined || this._eventListeners.get(eventName)) {
             this._revealView[eventListenerName] = (...args: any[]) => {
                 if (eventProperty) {
                     eventProperty(handler(...args));
-                } else {
-                    this.dispatchEvent(new CustomEvent(eventListenerName, { detail: handler(...args) }));
+                } 
+
+                if (this._eventListeners.get(eventName))
+                {
+                    this.dispatchEvent(new CustomEvent(eventName, { detail: handler(...args) }));
                 }
             };
         }
@@ -398,12 +416,7 @@ export class RvRevealView extends LitElement {
      * @returns The RVDashboard instance.
      */
     getRVDashboard(): any {
-        if (this._revealView) {
-            return this._revealView.dashboard;
-        }
-        else {
-            return null;
-        }
+        return this._revealView ? this._revealView.dashboard : null;
     }
 
     /**

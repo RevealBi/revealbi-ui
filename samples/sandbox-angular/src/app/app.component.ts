@@ -45,20 +45,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    //this.revealView.nativeElement.onSave = (args) => this.onSave(args);
-  }
-
-  async onSave(args: SaveEventArgs) {
-    console.log("onSave event received");
-    const result = await this.dialog.nativeElement.show();
-
-    if (result === "save-button") {
-      args.dashboardId = args.name = result;
-      args.saveFinished();
-    } else {
-      console.log("Save cancelled");
-      return;
-    }
+    
   }
 
   async handleSave($event: Event) {
