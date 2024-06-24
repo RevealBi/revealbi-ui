@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { RevealSdkSettings, RevealViewOptions, SaveEventArgs } from '@revealbi/ui';
-import { RevealView, RevealViewRef, RvDialog, RvDialogRef } from '@revealbi/ui-react';
+import { RevealSdkSettings, RevealViewOptions, SavingArgs, SeriesColorRequestedArgs } from '@revealbi/ui';
+import { RvRevealView, RvRevealViewRef, RvDialog, RvDialogRef } from '@revealbi/ui-react';
 import { useRef, useState } from 'react';
 import styles from './app.module.scss';
 
 export function App() {
 
-  const rvRef = useRef<RevealViewRef>(null);
+  const rvRef = useRef<RvRevealViewRef>(null);
   const rvDialogRef = useRef<RvDialogRef>(null);;
   
   RevealSdkSettings.serverUrl = "https://samples.revealbi.io/upmedia-backend/reveal-api/";
@@ -30,15 +30,12 @@ export function App() {
   }
 
   const footerButtonClick = () => {
-    rvDialogRef.current?.close("save-button");    
+    rvDialogRef.current?.close("save-button");
     console.log("Save button clicked");
   }
 
-  
-  async function onSave(args: SaveEventArgs) {
-
+  const onSaving = async (args: SavingArgs) => {
     const result = await rvDialogRef.current?.show();
-
     if (result === "save-button") {
       args.dashboardId = args.name = result;
       args.saveFinished();
@@ -50,7 +47,7 @@ export function App() {
 
   return (
     <div style={{height: '100%'}}>
-      <RevealView ref={rvRef} dashboard={dashboard} options={options} onSave={onSave} ></RevealView>
+      <RvRevealView ref={rvRef} dashboard={dashboard} options={options} saving={onSaving}></RvRevealView>
 
       <RvDialog ref={rvDialogRef} open={true} title="Save Dashboard">
         <h1>Do you want to save this dashboard?</h1>

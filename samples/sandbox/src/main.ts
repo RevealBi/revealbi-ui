@@ -1,5 +1,6 @@
+import { ChartType, DataSourcesRequestedArgs, RevealSdkSettings, RevealViewOptions, RvDialog, RvRevealView, RvVisualizationViewer, SeriesColorRequestedArgs} from "@revealbi/ui";
 
-import { ChartType, RevealSdkSettings, RevealView, RevealViewOptions, RvDialog, RvVisualizationViewer, VisualizationViewer} from "@revealbi/ui";
+declare let $: any;
 
 RevealSdkSettings.serverUrl = "https://samples.revealbi.io/upmedia-backend/reveal-api/";
 
@@ -26,27 +27,23 @@ const options: RevealViewOptions = {
     }
 };
 
-const createDashboardViewerWithString = async (name: string) => {
-    const viewer = new RevealView("#viewer", name, options);
-}
+const revealView = document.getElementById('revealView') as RvRevealView;
+revealView.options = options;
 
 //const dialog = document.getElementById('dialog') as RvDialog;
 //dialog.open = true;
 
-//createDashboardViewerWithString("Campaigns");
-
-const vizViewer = document.getElementById('viz-viewer') as RvVisualizationViewer;
+// const vizViewer = document.getElementById('viz-viewer') as RvVisualizationViewer;
 
 const button = document.getElementById('button');
 button?.addEventListener('click', () => {
-    vizViewer.dashboard = "Campaigns";
-    vizViewer.visualization = 5;
-    vizViewer.options = {    
-        menu: {
-            showMenu: true,
-        }
-    };
-    //vizViewer.options.menu!.showMenu = true;
+    // vizViewer.dashboard = "Campaigns";
+    // vizViewer.visualization = 5;
+    // vizViewer.options = {    
+    //     menu: {
+    //         showMenu: true,
+    //     }
+    // };
 });
 
 

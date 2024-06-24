@@ -1,11 +1,10 @@
-import { html } from "lit";
+import { LitElement, html } from "lit";
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import styles from "./dialog.styles";
-import { RvElement } from "../../core/rv-element";
 
 @customElement('rv-dialog')
-export class RvDialog extends RvElement {
+export class RvDialog extends LitElement {
     static override styles = styles;
 
     @property()

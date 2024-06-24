@@ -16,7 +16,6 @@
     "baseUrl": ".",
     "paths": {
       "@revealbi/ui": ["packages/ui/src/index.ts"],
-      "@revealbi/ui-angular": ["packages/ui-angular/src/index.ts"],
       "@revealbi/ui-react": ["packages/ui-react/src/index.ts"]
     }
   },
