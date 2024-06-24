@@ -3,19 +3,19 @@ export interface DashboardLinkRequestedArgs {
     readonly title: string;
 }
 
-export interface DataLoadingEventArgs {
+export interface DataLoadingArgs {
     cancel: boolean;
     errorMessage: string;
     readonly visualization: any;
 }
 
-export interface DataPointClickedEventArgs {
+export interface DataPointClickedArgs {
     readonly visualization: any;
     readonly cell: any;
     readonly  row: any;
 }
 
-export interface DataSourceDialogOpeningEventArgs {
+export interface DataSourceDialogOpeningArgs {
     /**
      * set to true to show custom dialog
      */
@@ -38,41 +38,41 @@ export interface DataSourcesRequestedArgs {
     trigger: string;
 }
 
-export interface EditorClosedEventArgs {
+export interface EditorClosedArgs {
     readonly isCancelled: boolean;
     readonly isNewVisualization: boolean;
     readonly visualization: any;
 }
 
-export interface EditorClosingEventArgs {
+export interface EditorClosingArgs {
     cancel: boolean;
     readonly isNewVisualization: boolean;
     resetVisualization: boolean;
     readonly visualization: any;
 }
 
-export interface EditorOpenedEventArgs {
+export interface EditorOpenedArgs {
     readonly isNewVisualization: boolean;
     readonly visualization: any;
 }
 
-export interface EditorOpeningEventArgs {
+export interface EditorOpeningArgs {
     cancel: boolean;
     readonly isNewVisualization: boolean;
     readonly visualization: any;
 }
 
-export interface FieldsInitializingEventArgs {
+export interface FieldsInitializingArgs {
     readonly dataSourceItem: any;
     fields: any[];
     useCustomSort: boolean;
 }
 
-export interface ImageExportedEventArgs {
+export interface ImageExportedArgs {
     readonly image: Element;
 }
 
-export interface LinkSelectionDialogOpeningEventArgs {
+export interface LinkSelectionDialogOpeningArgs {
     /**
      *  The callback to be called when the dialog is closed.
      * @param dashboardId The id of the dashboard that was selected.
@@ -80,7 +80,7 @@ export interface LinkSelectionDialogOpeningEventArgs {
     readonly callback: (dashboardId: string) => void;
 }
 
-export interface MenuOpeningEventArgs {
+export interface MenuOpeningArgs {
     cancel: boolean;
     readonly isInEditMode: boolean;
     menuItems: any[];
@@ -88,7 +88,7 @@ export interface MenuOpeningEventArgs {
     readonly visualization: any;
 }
 
-export interface SaveEventArgs {
+export interface SavingArgs {
     dashboardId: string;
     name: string;
     readonly isNew: boolean;
@@ -105,7 +105,7 @@ export interface SeriesColorRequestedArgs {
     readonly categoryName: string;
 }
 
-export interface TooltipShowingEventArgs {
+export interface TooltipShowingArgs {
     cancel: boolean;
     readonly cell: any;
     readonly row: any;

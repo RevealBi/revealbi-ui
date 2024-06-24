@@ -1,6 +1,6 @@
 import React from 'react';
-import {createComponent} from '@lit/react';
-import { RvRevealView as Component } from '@revealbi/ui';
+import {EventName, createComponent} from '@lit/react';
+import { RvRevealView as Component, SavingArgs } from '@revealbi/ui';
 
 export type RvRevealViewRef = InstanceType<typeof Component>;
 

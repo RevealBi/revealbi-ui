@@ -1,7 +1,8 @@
 <button (click)="doSomething()">Do something</button>
 
 <div style="height: 100%;">
-    <rv-reveal-view #revealView [dashboard]="dashboard" [options]="options" (onSave)="handleSave($event)"></rv-reveal-view>
+    <rv-reveal-view #revealView [dashboard]="dashboard" [options]="options" [saving]="handleSaving"></rv-reveal-view>
+
     <!-- <rv-visualization-viewer #vizViewer [dashboard]="dashboard" [visualization]="visualization" [options]="vizOptions"></rv-visualization-viewer> -->
 </div>
 

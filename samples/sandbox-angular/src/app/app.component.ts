@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { RevealSdkSettings, RevealViewOptions, RvDialog, RvRevealView, RvVisualizationViewer, SaveEventArgs, VisualizationViewerOptions } from '@revealbi/ui';
+import { RevealSdkSettings, RevealViewOptions, RvDialog, RvRevealView, RvVisualizationViewer, SavingArgs, VisualizationViewerOptions } from '@revealbi/ui';
 
 RevealSdkSettings.serverUrl = "https://samples.revealbi.io/upmedia-backend/reveal-api/";
 //RevealSdkSettings.serverUrl = "http://localhost:5111";
@@ -18,7 +18,7 @@ export class AppComponent implements AfterViewInit {
   @ViewChild("vizViewer") vizViewer!: ElementRef<RvVisualizationViewer>;
   @ViewChild("dialog") dialog!: ElementRef<RvDialog>;
   title = 'Save Dashboard';
-  isOpen: boolean = false;
+  isOpen: boolean = true;
 
   dashboard?: string = "Campaigns";
   visualization?: string | number = 5;
@@ -48,11 +48,8 @@ export class AppComponent implements AfterViewInit {
     
   }
 
-  async handleSave($event: Event) {
-    console.log("Data Bound onSave event received");
-    const args: SaveEventArgs = ($event as CustomEvent).detail;
-    const result = await this.dialog.nativeElement.show();
-
+  handleSaving = async (args: SavingArgs) => {
+    const result = await this.dialog.nativeElement.show();    
     if (result === "save-button") {
       args.dashboardId = args.name = result;
       args.saveFinished();
@@ -71,11 +68,11 @@ export class AppComponent implements AfterViewInit {
   }
 
   doSomething() {
-    this.vizViewer.nativeElement.options = {
-      showFilters: false,
-      menu: {
-        showMenu: false,
-      }
-    }
+    // this.vizViewer.nativeElement.options = {
+    //   showFilters: false,
+    //   menu: {
+    //     showMenu: false,
+    //   }
+    // }
   }
 }

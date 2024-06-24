@@ -1,6 +1,6 @@
 import { customElement, property } from "lit/decorators.js";
 import { merge } from "../../utilties/merge";
-import { DashboardLinkRequestedArgs, DataLoadingEventArgs, DataPointClickedEventArgs, DataSourceDialogOpeningEventArgs, DataSourcesRequestedArgs, EditorClosedEventArgs, EditorClosingEventArgs, EditorOpenedEventArgs, EditorOpeningEventArgs, FieldsInitializingEventArgs, ImageExportedEventArgs, LinkSelectionDialogOpeningEventArgs, MenuOpeningEventArgs, SaveEventArgs, SeriesColorRequestedArgs, TooltipShowingEventArgs } from "./events";
+import { DashboardLinkRequestedArgs, DataLoadingArgs, DataPointClickedArgs, DataSourceDialogOpeningArgs, DataSourcesRequestedArgs, EditorClosedArgs, EditorClosingArgs, EditorOpenedArgs, EditorOpeningArgs, FieldsInitializingArgs, ImageExportedArgs, LinkSelectionDialogOpeningArgs, MenuOpeningArgs, SavingArgs, SeriesColorRequestedArgs, TooltipShowingArgs } from "./reveal-view.callback-args";
 import styles from "./reveal-view.styles";
 import { LitElement, PropertyValueMap, html } from "lit";
 import { DashboardLoader } from "../../utilties/dashboard-loader";
@@ -20,7 +20,6 @@ export class RvRevealView extends LitElement {
 
     private _revealView: any = null;
     private _mergedOptions: RevealViewOptions = {};
-    private _eventListeners: Map<string, boolean> = new Map();
 
     /**
      * Gets or sets the dashboard to display in the RevealView component.
@@ -47,21 +46,26 @@ export class RvRevealView extends LitElement {
     }
 
     /**
-     * Represents a function that is triggered when a dashboard link is requested.
-     *
-     * @function
-     * @type {(args: DashboardLinkRequestedArgs) => string}
-     * @param {DashboardLinkRequestedArgs} args
+     * Callback triggered when data is loading.
+     * @param {DataLoadingArgs} args - Arguments for data loading.
      */
-    dashboardLinkRequested?: (args: DashboardLinkRequestedArgs) => string;
+    @property( { type: Function, attribute: false }) dataLoading?: (args: DataLoadingArgs) => void;
 
     /**
-     * Represents a function that is triggered when the data sources are requested.
-     *  
-     * @function
-     * @type {(args: DataSourcesRequestedArgs) => any}
-     * @param {DataSourcesRequestedArgs} args
-     * @returns {any} - A RevealDataSources object containing the data sources and data source items.
+     * Callback triggered when a data point is clicked.
+     * @param {DataPointClickedArgs} args - Arguments for data point clicked.
+     */
+    @property( { type: Function, attribute: false }) dataPointClicked?: (args: DataPointClickedArgs) => void;
+
+    /**
+     * Callback triggered when the data source dialog is opening.
+     * @param {DataSourceDialogOpeningArgs} args - Arguments for data source dialog opening.
+     */
+    @property( { type: Function, attribute: false }) dataSourceDialogOpening?: (args: DataSourceDialogOpeningArgs) => void;
+
+    /**
+     * Callback triggered when data sources are requested.
+     * @param {DataSourcesRequestedArgs} args - Arguments for data sources requested.
      * 
      * @example
      * ```typescript
@@ -76,144 +80,87 @@ export class RvRevealView extends LitElement {
      * }
      * ```
      */
-    dataSourcesRequested?: (args: DataSourcesRequestedArgs) => any; //todo: create interface for return type
+    @property( { type: Function, attribute: false }) dataSourcesRequested?: (args: DataSourcesRequestedArgs) => any; //todo: create interface for return type
 
     /**
-     * Represents a function that is triggered when the series color is requested.
-     * 
-     * @function
-     * @type {(args: SeriesColorRequestedArgs) => string}
-     * @param {SeriesColorRequestedArgs} args
-     * @returns {string} - The color to use for the series.
+     * Callback triggered when a dashboard link is requested.
+     * @param {DashboardLinkRequestedArgs} args - Arguments for dashboard link requested.
      */
-    seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
+    @property( { type: Function, attribute: false }) dashboardLinkRequested?: (args: DashboardLinkRequestedArgs) => string;
 
     /**
-     * Represents an event that is triggered when the data loading process starts.
-     *
-     * @event
-     * @type {(args: DataLoadingEventArgs) => void}
-     * @param {DataLoadingEventArgs} args
+     * Callback triggered when the editor is closed.
+     * @param {EditorClosedArgs} args - Arguments for editor closed.
      */
-    onDataLoading?: (args: DataLoadingEventArgs) => void;
+    @property( { type: Function, attribute: false }) editorClosed?: (args: EditorClosedArgs) => void;
 
     /**
-     * Represents an event that is triggered when a data point in the visualization is clicked by the user.
-     *
-     * @event
-     * @type {(args: DataPointClickedEventArgs) => void}
-     * @param {DataPointClickedEventArgs} args
+     * Callback triggered when the editor is closing.
+     * @param {EditorClosingArgs} args - Arguments for editor closing.
      */
-    onDataPointClicked?: (args: DataPointClickedEventArgs) => void;
+    @property( { type: Function, attribute: false }) editorClosing?: (args: EditorClosingArgs) => void;
 
     /**
-     * Represents an event that is triggered when the data source dialog is opening.
-     *
-     * @event
-     * @type {(args: DataSourceDialogOpeningEventArgs) => void}
-     * @param {DataSourceDialogOpeningEventArgs} args
+     * Callback triggered when the editor is opened.     
+     * @param {EditorOpenedArgs} args - Arguments for editor opened.
      */
-    onDataSourceDialogOpening?: (args: DataSourceDialogOpeningEventArgs) => void;
+    @property( { type: Function, attribute: false }) editorOpened?: (args: EditorOpenedArgs) => void;
 
     /**
-     * Represents an event that is triggered when the visualization editor is closed.
-     * 
-     * @event
-     * @type {(args: EditorClosedEventArgs) => void}
-     * @param {EditorClosedEventArgs} args
+     * Callback triggered when the editor is opening.
+     * @param {EditorOpeningArgs} args - Arguments for editor opening.
      */
-    onEditorClosed?: (args: EditorClosedEventArgs) => void;
+    @property( { type: Function, attribute: false }) editorOpening?: (args: EditorOpeningArgs) => void;
 
     /**
-     * Represents an event that is triggered when the visualization editor is closing.
-     * 
-     * @event
-     * @type {(args: EditorClosingEventArgs) => void}
-     * @param {EditorClosingEventArgs} args
+     * Callback triggered when fields are initializing.
+     * @param {FieldsInitializingArgs} args - Arguments for fields initializing.
      */
-    onEditorClosing?: (args: EditorClosingEventArgs) => void;
+    @property( { type: Function, attribute: false }) fieldsInitializing?: (args: FieldsInitializingArgs) => void;
 
     /**
-     * Represents an event that is triggered when the visualization editor is opened.
-     * 
-     * @event
-     * @type {(args: EditorOpenedEventArgs) => void}
-     * @param {EditorOpenedEventArgs} args
+     * Callback triggered when an image is exported.
+     * @param {ImageExportedArgs} args - Arguments for image exported.
      */
-    onEditorOpened?: (args: EditorOpenedEventArgs) => void;
+    @property( { type: Function, attribute: false }) imageExported?: (image: ImageExportedArgs) => void;
 
     /**
-     * Represents an event that is triggered when the visualization editor is opening.
-     * 
-     * @event
-     * @type {(args: EditorOpeningEventArgs) => void}
-     * @param {EditorOpeningEventArgs} args
+     * Callback triggered when the RevealView component is initialized.
      */
-    onEditorOpening?: (args: EditorOpeningEventArgs) => void;
+    @property( { type: Function, attribute: false }) initialized?: () => void;
 
     /**
-     * Represents an event that is triggered when the fields are initializing.
-     * 
-     * @event
-     * @type {(args: FieldsInitializingEvent) => void}
-     * @param {FieldsInitializingEvent} args
+     * Callback triggered when a link selection dialog is opening.
+     * @param {LinkSelectionDialogOpeningArgs} args - Arguments for link selection dialog opening.
      */
-    onFieldsInitializing?: (args: FieldsInitializingEventArgs) => void;
+    @property( { type: Function, attribute: false }) linkSelectionDialogOpening?: (args: LinkSelectionDialogOpeningArgs) => void;
 
     /**
-     * Represents an event that is triggered when the image is exported.
-     * 
-     * @event
-     * @type {(args: ImageExportedEventArgs) => void}
-     * @param {ImageExportedEventArgs} args
+     * Callback triggered when a menu is opening.
+     * @param {MenuOpeningArgs} args - Arguments for menu opening.
      */
-    onImageExported?: (image: ImageExportedEventArgs) => void;
+    @property( { type: Function, attribute: false }) menuOpening?: (args: MenuOpeningArgs) => void;
 
     /**
-     * Represents an event that is triggered when the RevealView is initialized.
-     * 
-     * @event
-     * @type {() => void}
+     * Callback triggered when a dashboard is saving.
+     * @param {SavingArgs} args - Arguments for saving.
      */
-    onInitialized?: () => void;
+    @property( { type: Function, attribute: false }) saving?: (args: SavingArgs) => void;
 
     /**
-     * Represents an event that is triggered when the link dialog is opening.
-     * 
-     * @event
-     * @type {(args: LinkSelectionDialogOpeningEventArgs) => void}
-     * @param {LinkSelectionDialogOpeningEventArgs} args
+     * Callback triggered when a series color is requested.
+     * @param {SeriesColorRequestedArgs} args - Arguments for series color requested.
      */
-    onLinkSelectionDialogOpening?: (args: LinkSelectionDialogOpeningEventArgs) => void;
+    @property( { type: Function, attribute: false }) seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
 
     /**
-     * Represents an event that is triggered when the menu is opening.
-     * 
-     * @event
-     * @type {(args: MenuOpeningEventArgs) => void}
-     * @param {MenuOpeningEventArgs} args
+     * Callback triggered when a tooltip is showing.
+     * @param {TooltipShowingArgs} args - Arguments for tooltip showing.
      */
-    onMenuOpening?: (args: MenuOpeningEventArgs) => void;
-
-    /**
-     * Represents an event that is triggered when the dashboard is saved.
-     * 
-     * @event
-     * @type {(args: SaveEventArgs) => void}
-     * @param {SaveEventArgs
-     */
-    onSave?: (args: SaveEventArgs) => void;
-
-    /**
-     * Represents an event that is triggered when the tooltip is showing.
-     * 
-     * @event
-     * @type {(args: TooltipShowingEventArgs) => void}
-     * @param {TooltipShowingEventArgs} args
-     */
-    onTooltipShowing?: (args: TooltipShowingEventArgs) => void;
+    @property( { type: Function, attribute: false }) tooltipShowing?: (args: TooltipShowingArgs) => void;
 
     protected override firstUpdated(changedProperties: Map<PropertyKey, unknown>): void {
+        console.log("firstUpdated");
         this.init(this.dashboard, this.options);
     }
 
@@ -225,7 +172,7 @@ export class RvRevealView extends LitElement {
         this._revealView.interactiveFilteringEnabled = true;
 
         //this event must be set BEFORE the dashboard is set
-        this.assignEventHandler(this.onDataLoading, 'onDataLoading', 'onDataLoading', (e: any) => e);        
+        this.assignHandler(this.dataLoading, 'onDataLoading', (e: any) => e);
 
         //todo: there is a bug in the Reveal SDK where the saved event args.isNew is always false if the dashboard property is set to null or undefined
         if (dashboard) {
@@ -235,12 +182,9 @@ export class RvRevealView extends LitElement {
         this.initializeEvents();
 
         // After the dashboard has been initialized and set, invoke the onInitialized event if it is defined.
-        if (this.onInitialized) {
-            this.onInitialized();
+        if (this.initialized) {
+            this.initialized();
         }
-        else if (this._eventListeners.get("onInitialized")) {
-            this.dispatchEvent(new CustomEvent("onInitialized"));
-        }          
     }
 
     private loadRVDashboard(dashboard?: string | unknown): Promise<unknown> {
@@ -253,7 +197,7 @@ export class RvRevealView extends LitElement {
             return;
         }
 
-        this._mergedOptions = merge({}, RevealViewDefaults, options);        
+        this._mergedOptions = merge({}, RevealViewDefaults, options);
 
         this._revealView.canEdit = this._mergedOptions.canEdit;
         this._revealView.canSave = this._mergedOptions.canSave;
@@ -329,21 +273,21 @@ export class RvRevealView extends LitElement {
 
     private initializeEvents() {
 
-        this.assignEventHandler(this.onDataPointClicked, 'onDataPointClicked', 'onVisualizationDataPointClicked', (visualization: any, cell: any, row: any) => {
+        this.assignHandler(this.dataPointClicked, 'onVisualizationDataPointClicked', (visualization: any, cell: any, row: any) => {
             return { visualization: visualization, cell: cell, row: row };
         });
-        this.assignEventHandler(this.onDataSourceDialogOpening, 'onDataSourceDialogOpening', 'onDataSourceSelectionDialogShowing', (e: any) => e);
-        this.assignEventHandler(this.onFieldsInitializing, 'onFieldsInitializing', 'onFieldsInitializing', (e: any) => e);
-        this.assignEventHandler(this.onTooltipShowing, 'onTooltipShowing', 'onTooltipShowing', (e: any) => e);
-        this.assignEventHandler(this.onEditorClosed,'onEditorClosed', 'onVisualizationEditorClosed', (e: any) => e);
-        this.assignEventHandler(this.onEditorClosing, 'onEditorClosing', 'onVisualizationEditorClosing', (e: any) => e);
-        this.assignEventHandler(this.onEditorOpened, 'onEditorOpened', 'onVisualizationEditorOpened', (e: any) => e);
-        this.assignEventHandler(this.onEditorOpening, 'onEditorOpening', 'onVisualizationEditorOpening', (e: any) => e);
-        this.assignEventHandler(this.onImageExported, 'onImageExported', 'onImageExported', (e: any) => {
+        this.assignHandler(this.dataSourceDialogOpening, 'onDataSourceSelectionDialogShowing', (e: any) => e);
+        this.assignHandler(this.fieldsInitializing, 'onFieldsInitializing', (e: any) => e);
+        this.assignHandler(this.tooltipShowing, 'onTooltipShowing', (e: any) => e);
+        this.assignHandler(this.editorClosed, 'onVisualizationEditorClosed', (e: any) => e);
+        this.assignHandler(this.editorClosing, 'onVisualizationEditorClosing', (e: any) => e);
+        this.assignHandler(this.editorOpened, 'onVisualizationEditorOpened', (e: any) => e);
+        this.assignHandler(this.editorOpening, 'onVisualizationEditorOpening', (e: any) => e);
+        this.assignHandler(this.imageExported, 'onImageExported', (e: any) => {
             return { image: e };
         });
-        this.assignEventHandler(this.onLinkSelectionDialogOpening, 'onLinkSelectionDialogOpening', 'onDashboardSelectorRequested', (e: any) => e);
-        this.assignEventHandler(this.onSave, 'onSave', 'onSave', (rv: any, e: any) => e);
+        this.assignHandler(this.linkSelectionDialogOpening, 'onDashboardSelectorRequested', (e: any) => e);
+        this.assignHandler(this.saving, 'onSave', (rv: any, e: any) => e);
 
         if (this.seriesColorRequested !== undefined) {
             this._revealView.onVisualizationSeriesColorAssigning = (visualization: any, defaultColor: any, fieldName: any, categoryName: any) => {
@@ -354,7 +298,7 @@ export class RvRevealView extends LitElement {
                     categoryName: categoryName
                 });
             }
-        }      
+        }
 
         this._revealView.onMenuOpening = (viz: any, e: any) => {
             const createMenuItems = (items: MenuItem[], clickCallback: (item: any) => void) => {
@@ -363,7 +307,7 @@ export class RvRevealView extends LitElement {
                     e.menuItems.push(new $.ig.RVMenuItem(item.title, icon, () => clickCallback(item)));
                 });
             };
-        
+
             if (viz === null) {
                 const items = this._mergedOptions.header!.menu!.items!;
                 createMenuItems(items, item => item.click());
@@ -372,7 +316,7 @@ export class RvRevealView extends LitElement {
                 createMenuItems(vizItems, vizItem => vizItem.click(viz));
             }
 
-            this.assignEventHandler(this.onMenuOpening, 'onMenuOpening', 'onMenuOpening', (e: any) => e);
+            this.assignHandler(this.menuOpening, 'onMenuOpening', (e: any) => e);
         };
 
         this._revealView.onDataSourcesRequested = (onComplete: any, trigger: any) => {
@@ -380,7 +324,7 @@ export class RvRevealView extends LitElement {
             const { dataSources, dataSourceItems } = getRVDataSources(this._mergedOptions.dataSources);
             //if a custom data source handler is provided, add the data sources from it
             if (this.dataSourcesRequested !== undefined) {
-                const result = this.dataSourcesRequested({trigger: trigger });
+                const result = this.dataSourcesRequested({ trigger: trigger });
                 dataSources.push(...result.dataSources);
                 dataSourceItems.push(...result.dataSourceItems);
             }
@@ -396,16 +340,11 @@ export class RvRevealView extends LitElement {
         };
     }
 
-    private assignEventHandler(eventProperty: Function | undefined, eventName: string, eventListenerName: string, handler: Function) {
-        if (eventProperty !== undefined || this._eventListeners.get(eventName)) {
+    private assignHandler(eventProperty: Function | undefined, eventListenerName: string, handler: Function) {
+        if (eventProperty !== undefined) {
             this._revealView[eventListenerName] = (...args: any[]) => {
                 if (eventProperty) {
                     eventProperty(handler(...args));
-                } 
-
-                if (this._eventListeners.get(eventName))
-                {
-                    this.dispatchEvent(new CustomEvent(eventName, { detail: handler(...args) }));
                 }
             };
         }
@@ -483,13 +422,6 @@ export class RvRevealView extends LitElement {
         if (optionsChanged) {
             this.updateOptions(this.options);
         }
-    }
-
-    override addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void {
-        super.addEventListener(type, listener, options);     
-        if (!this._eventListeners.has(type)) {
-            this._eventListeners.set(type, true);
-        }        
     }
 
     protected override render(): unknown {

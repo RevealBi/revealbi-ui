@@ -30,26 +30,20 @@ const options: RevealViewOptions = {
 const revealView = document.getElementById('revealView') as RvRevealView;
 revealView.options = options;
 
-// revealView.addEventListener('seriesColorRequested', (e: any) => {
-//     console.log('Event fired');
-//     console.log(e.detail);
-//     return 'red';
-// })
-
 //const dialog = document.getElementById('dialog') as RvDialog;
 //dialog.open = true;
 
 // const vizViewer = document.getElementById('viz-viewer') as RvVisualizationViewer;
 
-// const button = document.getElementById('button');
-// button?.addEventListener('click', () => {
-//     vizViewer.dashboard = "Campaigns";
-//     vizViewer.visualization = 5;
-//     vizViewer.options = {    
-//         menu: {
-//             showMenu: true,
-//         }
-//     };
-// });
+const button = document.getElementById('button');
+button?.addEventListener('click', () => {
+    // vizViewer.dashboard = "Campaigns";
+    // vizViewer.visualization = 5;
+    // vizViewer.options = {    
+    //     menu: {
+    //         showMenu: true,
+    //     }
+    // };
+});
 
 
