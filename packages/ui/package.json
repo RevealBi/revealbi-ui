@@ -6,6 +6,7 @@
   "module": "./index.js",
   "unpkg": "./index.umd.cjs",
   "typings": "./index.d.ts",
+  "customElements": "./custom-elements.json",
   "exports": {
     ".": {
       "import": "./index.js",
