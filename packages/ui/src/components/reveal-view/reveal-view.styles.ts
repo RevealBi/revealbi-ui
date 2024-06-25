@@ -8,7 +8,7 @@ export default css`
         display: block;
         height: 100%;
         width: 100%;
-        position: relative;
+        min-height: 250px;
 
         > div {
             height: inherit;
