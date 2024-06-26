@@ -5,11 +5,10 @@ export default css`
     ${componentStyles}
 
     :host {
-        --dialog-width: 31rem;
-
         --header-spacing: var(--rv-spacing-large);
         --body-spacing: var(--rv-spacing-large);
         --footer-spacing: var(--rv-spacing-large);   
+        --width: 31rem;
  
         display: none;
     }
@@ -47,7 +46,7 @@ export default css`
         display: flex;
         flex-direction: column;
         z-index: 2;
-        width: var(--dialog-width);
+        width: var(--width);
         max-width: calc(100% - var(--rv-spacing-2x-large));
         max-height: calc(100% - var(--rv-spacing-2x-large));
         background-color: var(--rv-dialog-background-color);

@@ -3,18 +3,49 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import styles from "./dialog.styles";
 
+/**
+ * @summary Dialogs appear above the page and require the user's immediate attention. They inform users about critical information, require users to make decisions, or involve multiple tasks.
+ *
+ * @slot - The dialog's main content.
+ * @slot header-actions - Optional actions to add to the header.
+ * @slot footer - The dialog's footer, usually one or more buttons representing various options.
+ *
+ * @csspart overlay - The overlay that covers the screen behind the dialog.
+ * @csspart panel - The dialog's panel (where the dialog and its content are rendered).
+ * @csspart header - The dialog's header. This element wraps the title and header actions.
+ * @csspart header-actions - Optional actions to add to the header.
+ * @csspart title - The dialog's title.
+ * @csspart close-button - The close button.
+ * @csspart content - The dialog's content.
+ * @csspart footer - The dialog's footer.
+ *
+ * @cssproperty --width - The preferred width of the dialog. Note that the dialog will shrink to accommodate smaller screens.
+ * @cssproperty --header-spacing - The amount of padding to use for the header.
+ * @cssproperty --body-spacing - The amount of padding to use for the body.
+ * @cssproperty --footer-spacing - The amount of padding to use for the footer.
+ *
+ */
 @customElement('rv-dialog')
 export class RvDialog extends LitElement {
     static override styles = styles;
 
-    @property()
-    override title: string = "";
-
-    @property({ type: Boolean, reflect: true })
-    open: boolean = false;
+    /**
+     * The dialog's title as displayed in the header.
+     */
+    @property() override title: string = "";
+    
+    /**
+     * Indicates whether or not the dialog is open. You can toggle this attribute to show and hide the dialog, or you can
+     * * use the `show()` and `close()` methods and this attribute will reflect the dialog's open state.
+     */
+    @property({ type: Boolean, reflect: true }) open: boolean = false;
 
     private _closeResolver?: (value: string | PromiseLike<any>) => void;
 
+    /**
+     * Shows the dialog.
+     * @returns Promise that resolves when the dialog is closed. The resolved value is the source of the close action.
+     */
     show(): Promise<any> {
         this.open = true;
         return new Promise<any>((resolve) => {
@@ -22,6 +53,10 @@ export class RvDialog extends LitElement {
         });
     }
 
+    /**
+     * Hides the dialog.
+     * @param source The source of the close action. This can be a string or an object. The resolved value of the promise returned by `show()` will be this value.
+     */
     close(source: any | "close-button" | "overlay") {
         //todo: emit event that is cancelable
         if (this._closeResolver) {
