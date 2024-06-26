@@ -6,6 +6,7 @@
   "unpkg": "./index.umd.js",
   "typings": "./index.d.ts",
   "customElements": "./custom-elements.json",
+  "web-types": "./web-types.json",
   "exports": {
     ".": {
       "import": "./index.mjs",
