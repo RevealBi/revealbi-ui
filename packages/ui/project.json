@@ -7,7 +7,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cem analyze --outdir ../../dist/packages/ui",
+        "command": "cem analyze --litelement --outdir ../../dist/packages/ui",
         "cwd": "packages/ui"
       },
       "dependsOn": ["vite-build"]
