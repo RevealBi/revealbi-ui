@@ -30,8 +30,8 @@ const options: RevealViewOptions = {
 const revealView = document.getElementById('revealView') as RvRevealView;
 revealView.options = options;
 
-//const dialog = document.getElementById('dialog') as RvDialog;
-//dialog.open = true;
+// const dialog = document.getElementById('dialog') as RvDialog;
+// dialog.open = true;
 
 // const vizViewer = document.getElementById('viz-viewer') as RvVisualizationViewer;
 

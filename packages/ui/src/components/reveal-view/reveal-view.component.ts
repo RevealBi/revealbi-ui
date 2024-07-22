@@ -47,25 +47,21 @@ export class RvRevealView extends LitElement {
 
     /**
      * Callback triggered when data is loading.
-     * @param {DataLoadingArgs} args - Arguments for data loading.
      */
     @property( { type: Function, attribute: false }) dataLoading?: (args: DataLoadingArgs) => void;
 
     /**
      * Callback triggered when a data point is clicked.
-     * @param {DataPointClickedArgs} args - Arguments for data point clicked.
      */
     @property( { type: Function, attribute: false }) dataPointClicked?: (args: DataPointClickedArgs) => void;
 
     /**
      * Callback triggered when the data source dialog is opening.
-     * @param {DataSourceDialogOpeningArgs} args - Arguments for data source dialog opening.
      */
     @property( { type: Function, attribute: false }) dataSourceDialogOpening?: (args: DataSourceDialogOpeningArgs) => void;
 
     /**
-     * Callback triggered when data sources are requested.
-     * @param {DataSourcesRequestedArgs} args - Arguments for data sources requested.
+     * Callback triggered when data sources are requested.     
      * 
      * @example
      * ```typescript
@@ -84,43 +80,36 @@ export class RvRevealView extends LitElement {
 
     /**
      * Callback triggered when a dashboard link is requested.
-     * @param {DashboardLinkRequestedArgs} args - Arguments for dashboard link requested.
      */
     @property( { type: Function, attribute: false }) dashboardLinkRequested?: (args: DashboardLinkRequestedArgs) => string;
 
     /**
      * Callback triggered when the editor is closed.
-     * @param {EditorClosedArgs} args - Arguments for editor closed.
      */
     @property( { type: Function, attribute: false }) editorClosed?: (args: EditorClosedArgs) => void;
 
     /**
      * Callback triggered when the editor is closing.
-     * @param {EditorClosingArgs} args - Arguments for editor closing.
      */
     @property( { type: Function, attribute: false }) editorClosing?: (args: EditorClosingArgs) => void;
 
     /**
      * Callback triggered when the editor is opened.     
-     * @param {EditorOpenedArgs} args - Arguments for editor opened.
      */
     @property( { type: Function, attribute: false }) editorOpened?: (args: EditorOpenedArgs) => void;
 
     /**
      * Callback triggered when the editor is opening.
-     * @param {EditorOpeningArgs} args - Arguments for editor opening.
      */
     @property( { type: Function, attribute: false }) editorOpening?: (args: EditorOpeningArgs) => void;
 
     /**
      * Callback triggered when fields are initializing.
-     * @param {FieldsInitializingArgs} args - Arguments for fields initializing.
      */
     @property( { type: Function, attribute: false }) fieldsInitializing?: (args: FieldsInitializingArgs) => void;
 
     /**
      * Callback triggered when an image is exported.
-     * @param {ImageExportedArgs} args - Arguments for image exported.
      */
     @property( { type: Function, attribute: false }) imageExported?: (image: ImageExportedArgs) => void;
 
@@ -131,36 +120,30 @@ export class RvRevealView extends LitElement {
 
     /**
      * Callback triggered when a link selection dialog is opening.
-     * @param {LinkSelectionDialogOpeningArgs} args - Arguments for link selection dialog opening.
      */
     @property( { type: Function, attribute: false }) linkSelectionDialogOpening?: (args: LinkSelectionDialogOpeningArgs) => void;
 
     /**
      * Callback triggered when a menu is opening.
-     * @param {MenuOpeningArgs} args - Arguments for menu opening.
      */
     @property( { type: Function, attribute: false }) menuOpening?: (args: MenuOpeningArgs) => void;
 
     /**
      * Callback triggered when a dashboard is saving.
-     * @param {SavingArgs} args - Arguments for saving.
      */
     @property( { type: Function, attribute: false }) saving?: (args: SavingArgs) => void;
 
     /**
      * Callback triggered when a series color is requested.
-     * @param {SeriesColorRequestedArgs} args - Arguments for series color requested.
      */
     @property( { type: Function, attribute: false }) seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
 
     /**
      * Callback triggered when a tooltip is showing.
-     * @param {TooltipShowingArgs} args - Arguments for tooltip showing.
      */
     @property( { type: Function, attribute: false }) tooltipShowing?: (args: TooltipShowingArgs) => void;
 
     protected override firstUpdated(changedProperties: Map<PropertyKey, unknown>): void {
-        console.log("firstUpdated");
         this.init(this.dashboard, this.options);
     }
 
@@ -367,7 +350,7 @@ export class RvRevealView extends LitElement {
 
     /**
      * Export the dashboard to an image.
-     * @param showDialog - If true, the export dialog will be shown. If false, the image will be exported directly.
+     * @param showDialog If true, the export dialog will be shown. If false, the image will be exported directly.
      * @returns A promise that resolves to the exported image element or null.
      */
     exportToImage(showDialog = true): void | Promise<Element | null> {

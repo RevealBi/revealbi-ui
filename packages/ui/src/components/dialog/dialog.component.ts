@@ -36,7 +36,7 @@ export class RvDialog extends LitElement {
     
     /**
      * Indicates whether or not the dialog is open. You can toggle this attribute to show and hide the dialog, or you can
-     * * use the `show()` and `close()` methods and this attribute will reflect the dialog's open state.
+     * use the `show()` and `close()` methods and this attribute will reflect the dialog's open state.
      */
     @property({ type: Boolean, reflect: true }) open: boolean = false;
 

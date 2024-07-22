@@ -14,7 +14,8 @@ RevealSdkSettings.serverUrl = "https://samples.revealbi.io/upmedia-backend/revea
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements AfterViewInit {
-  @ViewChild("revealView") revealView!: ElementRef<RvRevealView>;;
+  @ViewChild("revealView") revealView!: ElementRef<RvRevealView>;
+;
   @ViewChild("vizViewer") vizViewer!: ElementRef<RvVisualizationViewer>;
   @ViewChild("dialog") dialog!: ElementRef<RvDialog>;
   title = 'Save Dashboard';
