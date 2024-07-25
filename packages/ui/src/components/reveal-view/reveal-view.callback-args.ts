@@ -38,6 +38,14 @@ export interface DataSourcesRequestedArgs {
     trigger: string;
 }
 
+export interface EditModeEnteredArgs {
+    readonly dashboard: any;
+}
+
+export interface EditModeExitedArgs {
+    readonly dashboard: any;
+}
+
 export interface EditorClosedArgs {
     readonly isCancelled: boolean;
     readonly isNewVisualization: boolean;

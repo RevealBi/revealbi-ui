@@ -1,6 +1,6 @@
 import { customElement, property } from "lit/decorators.js";
 import { merge } from "../../utilties/merge";
-import { DashboardLinkRequestedArgs, DataLoadingArgs, DataPointClickedArgs, DataSourceDialogOpeningArgs, DataSourcesRequestedArgs, EditorClosedArgs, EditorClosingArgs, EditorOpenedArgs, EditorOpeningArgs, FieldsInitializingArgs, ImageExportedArgs, LinkSelectionDialogOpeningArgs, MenuOpeningArgs, SavingArgs, SeriesColorRequestedArgs, TooltipShowingArgs } from "./reveal-view.callback-args";
+import { DashboardLinkRequestedArgs, DataLoadingArgs, DataPointClickedArgs, DataSourceDialogOpeningArgs, DataSourcesRequestedArgs, EditModeEnteredArgs, EditModeExitedArgs, EditorClosedArgs, EditorClosingArgs, EditorOpenedArgs, EditorOpeningArgs, FieldsInitializingArgs, ImageExportedArgs, LinkSelectionDialogOpeningArgs, MenuOpeningArgs, SavingArgs, SeriesColorRequestedArgs, TooltipShowingArgs } from "./reveal-view.callback-args";
 import styles from "./reveal-view.styles";
 import { LitElement, PropertyValueMap, html } from "lit";
 import { DashboardLoader } from "../../utilties/dashboard-loader";
@@ -82,6 +82,30 @@ export class RvRevealView extends LitElement {
      * Callback triggered when a dashboard link is requested.
      */
     @property({ type: Function, attribute: false }) dashboardLinkRequested?: (args: DashboardLinkRequestedArgs) => string;
+
+    /**
+     * Callback triggered when edit mode is entered.
+     * 
+     * @example
+     * ```typescript
+     * revealView.editModeEntered = (e: EditModeEnteredArgs) => {
+     *   console.log("Edit mode entered", e.dashboard);
+     * }
+     * ```
+     */
+    @property({ type: Function, attribute: false }) editModeEntered?: (args: EditModeEnteredArgs) => void;
+
+    /**
+     * Callback triggered when edit mode is exited.
+     * 
+     * @example
+     * ```typescript
+     * revealView.editModeExited = (e: EditModeExitedArgs) => {
+     *  console.log("Edit mode exited", e.dashboard);
+     * }
+     * ```
+     */
+    @property({ type: Function, attribute: false }) editModeExited?: (args: EditModeExitedArgs) => void;
 
     /**
      * Callback triggered when the editor is closed.
@@ -262,6 +286,8 @@ export class RvRevealView extends LitElement {
         this.assignHandler(this.dataSourceDialogOpening, 'onDataSourceSelectionDialogShowing', (e: any) => e);
         this.assignHandler(this.fieldsInitializing, 'onFieldsInitializing', (e: any) => e);
         this.assignHandler(this.tooltipShowing, 'onTooltipShowing', (e: any) => e);
+        this.assignHandler(this.editModeEntered, 'onEditModeEntered', (e: any) => e);
+        this.assignHandler(this.editModeExited, 'onEditModeExited', (e: any) => e);
         this.assignHandler(this.editorClosed, 'onVisualizationEditorClosed', (e: any) => e);
         this.assignHandler(this.editorClosing, 'onVisualizationEditorClosing', (e: any) => e);
         this.assignHandler(this.editorOpened, 'onVisualizationEditorOpened', (e: any) => e);
