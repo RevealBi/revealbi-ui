@@ -1,6 +1,6 @@
 import { customElement, property } from "lit/decorators.js";
 import { merge } from "../../utilties/merge";
-import { DashboardLinkRequestedArgs, DataLoadingArgs, DataPointClickedArgs, DataSourceDialogOpeningArgs, DataSourcesRequestedArgs, EditorClosedArgs, EditorClosingArgs, EditorOpenedArgs, EditorOpeningArgs, FieldsInitializingArgs, ImageExportedArgs, LinkSelectionDialogOpeningArgs, MenuOpeningArgs, SavingArgs, SeriesColorRequestedArgs, TooltipShowingArgs } from "./reveal-view.callback-args";
+import { DashboardLinkRequestedArgs, DataLoadingArgs, DataPointClickedArgs, DataSourceDialogOpeningArgs, DataSourcesRequestedArgs, EditModeEnteredArgs, EditModeExitedArgs, EditorClosedArgs, EditorClosingArgs, EditorOpenedArgs, EditorOpeningArgs, FieldsInitializingArgs, ImageExportedArgs, LinkSelectionDialogOpeningArgs, MenuOpeningArgs, SavingArgs, SeriesColorRequestedArgs, TooltipShowingArgs } from "./reveal-view.callback-args";
 import styles from "./reveal-view.styles";
 import { LitElement, PropertyValueMap, html } from "lit";
 import { DashboardLoader } from "../../utilties/dashboard-loader";
@@ -48,17 +48,17 @@ export class RvRevealView extends LitElement {
     /**
      * Callback triggered when data is loading.
      */
-    @property( { type: Function, attribute: false }) dataLoading?: (args: DataLoadingArgs) => void;
+    @property({ type: Function, attribute: false }) dataLoading?: (args: DataLoadingArgs) => void;
 
     /**
      * Callback triggered when a data point is clicked.
      */
-    @property( { type: Function, attribute: false }) dataPointClicked?: (args: DataPointClickedArgs) => void;
+    @property({ type: Function, attribute: false }) dataPointClicked?: (args: DataPointClickedArgs) => void;
 
     /**
      * Callback triggered when the data source dialog is opening.
      */
-    @property( { type: Function, attribute: false }) dataSourceDialogOpening?: (args: DataSourceDialogOpeningArgs) => void;
+    @property({ type: Function, attribute: false }) dataSourceDialogOpening?: (args: DataSourceDialogOpeningArgs) => void;
 
     /**
      * Callback triggered when data sources are requested.     
@@ -76,72 +76,96 @@ export class RvRevealView extends LitElement {
      * }
      * ```
      */
-    @property( { type: Function, attribute: false }) dataSourcesRequested?: (args: DataSourcesRequestedArgs) => any; //todo: create interface for return type
+    @property({ type: Function, attribute: false }) dataSourcesRequested?: (args: DataSourcesRequestedArgs) => any; //todo: create interface for return type
 
     /**
      * Callback triggered when a dashboard link is requested.
      */
-    @property( { type: Function, attribute: false }) dashboardLinkRequested?: (args: DashboardLinkRequestedArgs) => string;
+    @property({ type: Function, attribute: false }) dashboardLinkRequested?: (args: DashboardLinkRequestedArgs) => string;
+
+    /**
+     * Callback triggered when edit mode is entered.
+     * 
+     * @example
+     * ```typescript
+     * revealView.editModeEntered = (e: EditModeEnteredArgs) => {
+     *   console.log("Edit mode entered", e.dashboard);
+     * }
+     * ```
+     */
+    @property({ type: Function, attribute: false }) editModeEntered?: (args: EditModeEnteredArgs) => void;
+
+    /**
+     * Callback triggered when edit mode is exited.
+     * 
+     * @example
+     * ```typescript
+     * revealView.editModeExited = (e: EditModeExitedArgs) => {
+     *  console.log("Edit mode exited", e.dashboard);
+     * }
+     * ```
+     */
+    @property({ type: Function, attribute: false }) editModeExited?: (args: EditModeExitedArgs) => void;
 
     /**
      * Callback triggered when the editor is closed.
      */
-    @property( { type: Function, attribute: false }) editorClosed?: (args: EditorClosedArgs) => void;
+    @property({ type: Function, attribute: false }) editorClosed?: (args: EditorClosedArgs) => void;
 
     /**
      * Callback triggered when the editor is closing.
      */
-    @property( { type: Function, attribute: false }) editorClosing?: (args: EditorClosingArgs) => void;
+    @property({ type: Function, attribute: false }) editorClosing?: (args: EditorClosingArgs) => void;
 
     /**
      * Callback triggered when the editor is opened.     
      */
-    @property( { type: Function, attribute: false }) editorOpened?: (args: EditorOpenedArgs) => void;
+    @property({ type: Function, attribute: false }) editorOpened?: (args: EditorOpenedArgs) => void;
 
     /**
      * Callback triggered when the editor is opening.
      */
-    @property( { type: Function, attribute: false }) editorOpening?: (args: EditorOpeningArgs) => void;
+    @property({ type: Function, attribute: false }) editorOpening?: (args: EditorOpeningArgs) => void;
 
     /**
      * Callback triggered when fields are initializing.
      */
-    @property( { type: Function, attribute: false }) fieldsInitializing?: (args: FieldsInitializingArgs) => void;
+    @property({ type: Function, attribute: false }) fieldsInitializing?: (args: FieldsInitializingArgs) => void;
 
     /**
      * Callback triggered when an image is exported.
      */
-    @property( { type: Function, attribute: false }) imageExported?: (image: ImageExportedArgs) => void;
+    @property({ type: Function, attribute: false }) imageExported?: (image: ImageExportedArgs) => void;
 
     /**
      * Callback triggered when the RevealView component is initialized.
      */
-    @property( { type: Function, attribute: false }) initialized?: () => void;
+    @property({ type: Function, attribute: false }) initialized?: () => void;
 
     /**
      * Callback triggered when a link selection dialog is opening.
      */
-    @property( { type: Function, attribute: false }) linkSelectionDialogOpening?: (args: LinkSelectionDialogOpeningArgs) => void;
+    @property({ type: Function, attribute: false }) linkSelectionDialogOpening?: (args: LinkSelectionDialogOpeningArgs) => void;
 
     /**
      * Callback triggered when a menu is opening.
      */
-    @property( { type: Function, attribute: false }) menuOpening?: (args: MenuOpeningArgs) => void;
+    @property({ type: Function, attribute: false }) menuOpening?: (args: MenuOpeningArgs) => void;
 
     /**
      * Callback triggered when a dashboard is saving.
      */
-    @property( { type: Function, attribute: false }) saving?: (args: SavingArgs) => void;
+    @property({ type: Function, attribute: false }) saving?: (args: SavingArgs) => void;
 
     /**
      * Callback triggered when a series color is requested.
      */
-    @property( { type: Function, attribute: false }) seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
+    @property({ type: Function, attribute: false }) seriesColorRequested?: (args: SeriesColorRequestedArgs) => string;
 
     /**
      * Callback triggered when a tooltip is showing.
      */
-    @property( { type: Function, attribute: false }) tooltipShowing?: (args: TooltipShowingArgs) => void;
+    @property({ type: Function, attribute: false }) tooltipShowing?: (args: TooltipShowingArgs) => void;
 
     protected override firstUpdated(changedProperties: Map<PropertyKey, unknown>): void {
         this.init(this.dashboard, this.options);
@@ -262,6 +286,8 @@ export class RvRevealView extends LitElement {
         this.assignHandler(this.dataSourceDialogOpening, 'onDataSourceSelectionDialogShowing', (e: any) => e);
         this.assignHandler(this.fieldsInitializing, 'onFieldsInitializing', (e: any) => e);
         this.assignHandler(this.tooltipShowing, 'onTooltipShowing', (e: any) => e);
+        this.assignHandler(this.editModeEntered, 'onEditModeEntered', (e: any) => e);
+        this.assignHandler(this.editModeExited, 'onEditModeExited', (e: any) => e);
         this.assignHandler(this.editorClosed, 'onVisualizationEditorClosed', (e: any) => e);
         this.assignHandler(this.editorClosing, 'onVisualizationEditorClosing', (e: any) => e);
         this.assignHandler(this.editorOpened, 'onVisualizationEditorOpened', (e: any) => e);
@@ -334,11 +360,43 @@ export class RvRevealView extends LitElement {
     }
 
     /**
+     * Adds a visualization to the dashboard.
+     */
+    addVisualization(): void {
+        this._revealView._dashboardView._delegate.addWidgetTriggered();
+    }
+
+    /**
+     * Adds a textbox visualization to the dashboard.
+     */
+    addTextBoxVisualization(): void {
+        this._revealView.enterEditMode(); //enter edit mode so that we can save the newly added textbox
+        $.ig.RPEditorTextVisualization.prototype.show(this._revealView._dashboardView, null, this._revealView._dashboardView.theme(), ((e: any) => {
+            this._revealView._dashboardView.addWidget(e)
+        }));
+    }
+
+    /**
      * Gets the RVDashboard instance from the underlying RevealView object.
      * @returns The RVDashboard instance.
      */
     getRVDashboard(): any {
         return this._revealView ? this._revealView.dashboard : null;
+    }
+
+    /**
+     * Places the component in edit mode.
+     */
+    enterEditMode(): void {
+        this._revealView.enterEditMode();
+    }
+
+    /**
+     * Exits edit mode.
+     * @param applyChanges If true, the changes made in edit mode will be applied. If false, the changes will be discarded.
+     */
+    exitEditMode(applyChanges: boolean): void {
+        this._revealView.exitEditMode(applyChanges);
     }
 
     /**
