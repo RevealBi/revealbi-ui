@@ -1,8 +1,8 @@
 {
   "name": "@revealbi/ui-react",
-  "version": "0.2.0",
+  "version": "0.2.4",
   "peerDependencies": {
-    "@revealbi/ui": ">=0.2.0"
+    "@revealbi/ui": ">=0.2.4"
   },
   "dependencies": {
     "@lit/react": "^1.0.5"

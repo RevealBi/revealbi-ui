@@ -1,4 +1,4 @@
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { merge } from "../../utilties/merge";
 import { DashboardLinkRequestedArgs, DataLoadingArgs, DataPointClickedArgs, DataSourceDialogOpeningArgs, DataSourcesRequestedArgs, EditModeEnteredArgs, EditModeExitedArgs, EditorClosedArgs, EditorClosingArgs, EditorOpenedArgs, EditorOpeningArgs, FieldsInitializingArgs, ImageExportedArgs, LinkSelectionDialogOpeningArgs, MenuOpeningArgs, SavingArgs, SeriesColorRequestedArgs, TooltipShowingArgs } from "./reveal-view.callback-args";
 import styles from "./reveal-view.styles";
@@ -13,8 +13,9 @@ import { ChartType } from "./enums";
 
 declare let $: any;
 
-//this is an experiemental component to see if we can wrap the RevealView component in a web component
-@customElement("rv-reveal-view")
+/**
+ * A web component that wraps the jQuery RevealView component.
+ */
 export class RvRevealView extends LitElement {
     static override styles = styles;
 
@@ -470,6 +471,10 @@ export class RvRevealView extends LitElement {
             <div id="rv-viewer"></div>
         `;
     }
+}
+
+if (!customElements.get('rv-reveal-view')) {
+    customElements.define('rv-reveal-view', RvRevealView);
 }
 
 declare global {

@@ -1,4 +1,4 @@
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 import { merge } from "../../utilties/merge";
 import { LitElement, PropertyValueMap, html } from "lit";
 import { VisualizationViewerOptions } from "./options/visualization-viewer-options";
@@ -8,8 +8,9 @@ import styles from "./visualization-viewer.styles";
 
 declare let $: any;
 
-//this is an experiemental component to see if we can wrap the RevealView component in a web component
-@customElement("rv-visualization-viewer")
+/**
+ * A web component that wraps the jQuery RevealView component and configures it to display a single visualization.
+ */
 export class RvVisualizationViewer extends LitElement {
     static override styles = styles;
 
@@ -148,6 +149,10 @@ export class RvVisualizationViewer extends LitElement {
             <div id="rv-viewer"></div>
         `;
     }
+}
+
+if (!customElements.get('rv-visualization-viewer')) {
+    customElements.define('rv-visualization-viewer', RvVisualizationViewer);
 }
 
 declare global {

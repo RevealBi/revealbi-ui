@@ -25,7 +25,6 @@ import styles from "./dialog.styles";
  * @cssproperty --footer-spacing - The amount of padding to use for the footer.
  *
  */
-@customElement('rv-dialog')
 export class RvDialog extends LitElement {
     static override styles = styles;
 
@@ -102,6 +101,10 @@ export class RvDialog extends LitElement {
         </div>
         `;
     }
+}
+
+if (!customElements.get('rv-dialog')) {
+    customElements.define('rv-dialog', RvDialog);
 }
 
 declare global {
